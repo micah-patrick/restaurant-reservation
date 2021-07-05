@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { createReservation } from "../utils/api";
 
 export default function ReservationNew() {
 
@@ -14,7 +15,6 @@ export default function ReservationNew() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log("submitted");
         const newReservation = {
             "first_name": firstName,
             "last_name": lastName,
@@ -23,7 +23,15 @@ export default function ReservationNew() {
             "reservation_time": reservationTime + ":00",
             "people": Number(people),
         }
-        console.log(newReservation);
+        createReservation(newReservation)
+        .then((result) => {
+                console.log("submitted");
+                console.log(result);
+                history.push("/")
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
 
