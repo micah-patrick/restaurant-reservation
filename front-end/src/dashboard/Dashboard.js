@@ -3,6 +3,9 @@ import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useLocation } from "react-router-dom"; 
 import ReservationCard from "../reservations/ReservationCard";
+import { Link, useHistory } from "react-router-dom";
+import useQuery from "../utils/useQuery";
+import {previous, next} from "../utils/date-time";
 
 
 /**
@@ -13,12 +16,11 @@ import ReservationCard from "../reservations/ReservationCard";
  */
 function Dashboard({ date }) {
 
-  function useQuery() {
-    return new URLSearchParams(useLocation().search);
-  }
+
     let query = useQuery();
     date = query.get("date") || date;
 
+  const history = useHistory();
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [displayReservations, setDisplayReservations] = useState("");
@@ -55,6 +57,26 @@ function Dashboard({ date }) {
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for date {date}</h4>
+      </div>
+      <div className="d-md-flex mb-3">
+        <button className="btn btn-primary mx-1 mb-3"
+          onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
+        >
+          <span className="oi oi-chevron-left mr-2" />
+          Previous
+        </button>
+        <button className="btn btn-primary mx-1 mb-3"
+          onClick={() => history.push(`/dashboard`)}
+        >
+          <span className="oi oi-calendar mr-2" />
+          Today
+        </button>
+        <button className="btn btn-primary mx-1 mb-3"
+          onClick={() => history.push(`/dashboard?date=${next(date)}`)}
+        >
+          Next
+          <span className="oi oi-chevron-right ml-2" />
+        </button>
       </div>
       <ErrorAlert error={reservationsError} />
       <div className="row" >
