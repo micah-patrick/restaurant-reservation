@@ -1,8 +1,9 @@
 const knex = require("../db/connection");
 
-async function list(){
+async function list(date){
     return knex("reservations")
-    .select("*");
+    .select("*")
+    .where({reservation_date: date});
 }
 
 function create(reservation) {

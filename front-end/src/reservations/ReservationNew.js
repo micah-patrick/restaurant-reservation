@@ -27,7 +27,7 @@ export default function ReservationNew() {
         .then((result) => {
                 console.log("submitted");
                 console.log(result);
-                history.push("/")
+                history.push(`/dashboard?date=${reservationDate}`)
             })
             .catch((error) => {
                 console.log(error);
@@ -46,7 +46,7 @@ export default function ReservationNew() {
             className="form-control"
             id="firstName"
             type="text"
-            name="firstName"
+            name="first_name"
             onChange={(event) => {setFirstName(event.target.value);}}
             value={firstName}
             maxLength="50"
@@ -59,7 +59,7 @@ export default function ReservationNew() {
             className="form-control"
             id="lastName"
             type="text"
-            name="lastName"
+            name="last_name"
             onChange={(event) => {setLastName(event.target.value);}}
             value={lastName}
             maxLength="50"
@@ -73,7 +73,7 @@ export default function ReservationNew() {
             id="mobileNumber"
             type="tel"
             pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-            name="mobileNumber"
+            name="mobile_number"
             onChange={(event) => {setMobileNumber(event.target.value);}}
             value={mobileNumber}
             required
@@ -85,7 +85,7 @@ export default function ReservationNew() {
             className="form-control"
             id="reservationDate"
             type="date"
-            name="reservationDate"
+            name="reservation_date"
             onChange={(event) => {setReservationDate(event.target.value);}}
             value={reservationDate}
             required
@@ -95,7 +95,7 @@ export default function ReservationNew() {
           <label htmlFor="reservationTime">Reservation Time</label>
           <input
             className="form-control"
-            id="reservationTime"
+            id="reservation_time"
             type="time"
             name="reservationTime"
             onChange={(event) => {setReservationTime(event.target.value);}}
