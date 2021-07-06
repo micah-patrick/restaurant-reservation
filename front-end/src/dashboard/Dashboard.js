@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useLocation } from "react-router-dom"; 
+import ReservationCard from "../reservations/ReservationCard";
 
 
 /**
@@ -20,9 +21,23 @@ function Dashboard({ date }) {
 
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [displayReservations, setDisplayReservations] = useState("");
 
 
   useEffect(loadDashboard, [date]);
+
+  useEffect(() => {
+    setDisplayReservations(
+      reservations.map((reservation, index) => {
+        return (
+          <span key={index}>
+            <ReservationCard reservation={reservation} />
+          </span>
+        );
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reservations]);
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -33,6 +48,8 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+
+
   return (
     <main>
       <h1>Dashboard</h1>
@@ -40,7 +57,9 @@ function Dashboard({ date }) {
         <h4 className="mb-0">Reservations for date {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
+      <div className="row" >
+        {displayReservations}
+      </div>
     </main>
   );
 }
