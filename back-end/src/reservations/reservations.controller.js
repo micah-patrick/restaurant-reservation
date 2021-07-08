@@ -114,10 +114,12 @@ function timeIsValid(req, res, next) {
 
 function dateIsFuture(req, res, next) {
   const {reservation_date} = req.body.data;
-  const reservationDate = new Date(reservation_date)
+  let [ year, month, date ] = reservation_date.split("-");
+  month -= 1;
+  const reservationDate = new Date(year, month, date, 23, 59, 59, 59)
   const today = new Date();
 
-  if (reservationDate >= today) {
+  if (today.getTime() <= reservationDate.getTime()) {
     return next();
   }
   return next({
@@ -128,14 +130,15 @@ function dateIsFuture(req, res, next) {
 
 function dateIsNotTuesday(req, res, next) {
   const {reservation_date} = req.body.data;
-  const day = new Date(reservation_date).getDay();
-
-  if (day !== 1) {
+  let [ year, month, date ] = reservation_date.split("-");
+  month -= 1;
+  const day = new Date(year, month, date).getDay();
+  if (day !== 2) {
     return next();
   }
   return next({
     status: 400,
-    message: `we are closed on Tuesdays`,
+    message: `We are closed on Tuesdays`,
   })
 }
 

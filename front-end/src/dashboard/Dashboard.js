@@ -15,11 +15,9 @@ import {previous, next, getDisplayDate} from "../utils/date-time";
  */
 function Dashboard({ date }) {
 
-    let query = useQuery();
-    date = query.get("date") || date;
-    const displayDate = getDisplayDate(date);
-
-    console.log(displayDate);
+  let query = useQuery();
+  date = query.get("date") || date;
+  const displayDate = getDisplayDate(date);
 
   const history = useHistory();
   const [reservations, setReservations] = useState([]);
