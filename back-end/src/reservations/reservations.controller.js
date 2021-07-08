@@ -112,6 +112,34 @@ function timeIsValid(req, res, next) {
   })
 }
 
+function dateIsFuture(req, res, next) {
+  const {reservation_date} = req.body.data;
+  const reservationDate = new Date(reservation_date)
+  const today = new Date();
+
+  if (reservationDate >= today) {
+    return next();
+  }
+  return next({
+    status: 400,
+    message: `reservation_date must be set in the future`,
+  })
+}
+
+function dateIsNotTuesday(req, res, next) {
+  const {reservation_date} = req.body.data;
+  const day = new Date(reservation_date).getDay();
+
+  if (day !== 1) {
+    return next();
+  }
+  return next({
+    status: 400,
+    message: `we are closed on Tuesdays`,
+  })
+}
+
+
 module.exports = {
   list: [asyncErrorBoundary(getDate), asyncErrorBoundary(list)],
   create: [
@@ -121,6 +149,8 @@ module.exports = {
     mobileNumberIsValid,
     dateIsValid,
     timeIsValid,
+    dateIsNotTuesday,
+    dateIsFuture,
     asyncErrorBoundary(create)
   ],
 };

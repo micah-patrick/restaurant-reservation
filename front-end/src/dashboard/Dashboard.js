@@ -16,9 +16,16 @@ import {previous, next} from "../utils/date-time";
  */
 function Dashboard({ date }) {
 
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     let query = useQuery();
     date = query.get("date") || date;
+    const pageDate = new Date(date);
+    const day = days[pageDate.getDay()];
+    const month = months[pageDate.getMonth()];
+    const dateNumber = pageDate.getDate();
+    const year = pageDate.getFullYear();
 
   const history = useHistory();
   const [reservations, setReservations] = useState([]);
@@ -56,7 +63,7 @@ function Dashboard({ date }) {
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date {date}</h4>
+        <h4 className="mb-0">Reservations for {`${day}, ${month} ${dateNumber} ${year}`}</h4>
       </div>
       <div className="d-md-flex mb-3">
         <button className="btn btn-primary mx-1 mb-3"
