@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import { useLocation } from "react-router-dom"; 
 import ReservationCard from "../reservations/ReservationCard";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import useQuery from "../utils/useQuery";
-import {previous, next} from "../utils/date-time";
+import {previous, next, getDisplayDate} from "../utils/date-time";
 
 
 /**
@@ -16,16 +15,11 @@ import {previous, next} from "../utils/date-time";
  */
 function Dashboard({ date }) {
 
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
     let query = useQuery();
     date = query.get("date") || date;
-    const pageDate = new Date(date);
-    const day = days[pageDate.getDay()];
-    const month = months[pageDate.getMonth()];
-    const dateNumber = pageDate.getDate();
-    const year = pageDate.getFullYear();
+    const displayDate = getDisplayDate(date);
+
+    console.log(displayDate);
 
   const history = useHistory();
   const [reservations, setReservations] = useState([]);
@@ -63,7 +57,7 @@ function Dashboard({ date }) {
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for {`${day}, ${month} ${dateNumber} ${year}`}</h4>
+        <h4 className="mb-0">Reservations for {displayDate.display}</h4>
       </div>
       <div className="d-md-flex mb-3">
         <button className="btn btn-primary mx-1 mb-3"
