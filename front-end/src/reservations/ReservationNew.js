@@ -22,7 +22,7 @@ export default function ReservationNew() {
             "last_name": lastName,
             "mobile_number": mobileNumber,
             "reservation_date": reservationDate,
-            "reservation_time": reservationTime + ":00",
+            "reservation_time": reservationTime,
             "people": Number(people),
         }
         createReservation(newReservation)
@@ -34,7 +34,6 @@ export default function ReservationNew() {
             .catch(setReservationsError)
     }
 
-    
 
 
     return(

@@ -113,13 +113,14 @@ function timeIsValid(req, res, next) {
 }
 
 function dateIsFuture(req, res, next) {
-  const {reservation_date} = req.body.data;
+  const {reservation_date, reservation_time} = req.body.data;
+  const [hour, minute] = reservation_time.split(":")
   let [ year, month, date ] = reservation_date.split("-");
   month -= 1;
-  const reservationDate = new Date(year, month, date, 23, 59, 59, 59)
+  const reservationDate = new Date(year, month, date, hour, minute, 59, 59)
   const today = new Date();
 
-  if (today.getTime() <= reservationDate.getTime()) {
+  if (today <= reservationDate) {
     return next();
   }
   return next({
@@ -142,6 +143,29 @@ function dateIsNotTuesday(req, res, next) {
   })
 }
 
+function restaurantIsOpen(req, res, next) {
+  let isOpen = false;
+  const {reservation_time} = req.body.data;
+  let [hour, minute] = reservation_time.split(":");
+  hour = Number(hour);
+  minute = Number(minute);
+
+  if (hour > 10 && hour < 21) {isOpen = true;}
+  if (hour === 10){
+    if (minute >= 30) {isOpen = true;}
+  } 
+  if (hour === 21) {
+    if (minute <= 30) {isOpen = true;}
+  }
+
+  if (isOpen) {
+    return next();
+  }
+  return next({
+    status : 400,
+    message: `Reservations must be made between 10:30am to 9:30pm`,
+  })
+}
 
 module.exports = {
   list: [asyncErrorBoundary(getDate), asyncErrorBoundary(list)],
@@ -154,6 +178,11 @@ module.exports = {
     timeIsValid,
     dateIsNotTuesday,
     dateIsFuture,
+    restaurantIsOpen,
     asyncErrorBoundary(create)
   ],
 };
+
+
+//1030 am
+//930pm
