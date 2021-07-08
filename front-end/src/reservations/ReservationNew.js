@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
 
 export default function ReservationNew() {
 
@@ -12,6 +13,7 @@ export default function ReservationNew() {
     const [reservationDate, setReservationDate] = useState("");
     const [reservationTime, setReservationTime] = useState("");
     const [people, setPeople] = useState(1);
+    const [reservationsError, setReservationsError] = useState(null);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -29,15 +31,16 @@ export default function ReservationNew() {
                 console.log(result);
                 history.push(`/dashboard?date=${reservationDate}`)
             })
-            .catch((error) => {
-                console.log(error);
-            })
+            .catch(setReservationsError)
     }
+
+    
 
 
     return(
         <>
       <h2> New Reservation</h2>
+      <ErrorAlert error={reservationsError} />
       <form onSubmit={handleSubmit}>
         {/*name input*/}
         <div className="form-group">
