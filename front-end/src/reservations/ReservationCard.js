@@ -1,16 +1,11 @@
 import React from "react";
 import {getDisplayDate} from "../utils/date-time";
+import { Link } from "react-router-dom";
 
 export default function ReservationCard({reservation}) {
 
-    const first_name = reservation.first_name;
-    const last_name = reservation.last_name;
-    const mobile_number = reservation.mobile_number;
-    const reservation_date = reservation.reservation_date;
-    const reservation_time = reservation.reservation_time;
-    const people = reservation.people;
-    const created_at = reservation.created_at;
-    const updated_at = reservation.updated_at;
+
+    const {reservation_id, first_name, last_name, mobile_number, reservation_date, reservation_time, people, created_at, updated_at} = reservation;
     const displayDate = getDisplayDate(reservation_date);
 
     return (
@@ -25,6 +20,13 @@ export default function ReservationCard({reservation}) {
                     <p className="card-text">{`Reservation Time: ${reservation_time}`}</p>
                     <p className="card-text">{`Created at: ${created_at}`}</p>
                     <p className="card-text">{`Updated at: ${updated_at}`}</p>
+                    <Link 
+                        className="btn btn-primary mx-1 mb-3"
+                        to={`/reservations/${reservation_id}/seat`}
+                    >
+                    <span className="oi oi-check mr-2" />
+                    Seat
+                    </Link>
                 </div>
             </div>
         </div>
