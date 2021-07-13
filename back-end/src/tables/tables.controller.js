@@ -6,6 +6,11 @@ async function list(req, res) {
   const data = await service.list();
   res.json({ data });
 }
+async function listFree(req, res) {
+  const capacity = res.locals.capacity;
+  const data = await service.listFree(capacity);
+  res.json({ data });
+}
 
 async function create(req, res) {
     const data = await service.create(req.body.data);
@@ -60,6 +65,12 @@ async function create(req, res) {
       })
   }
 
+  function getCapacity(req, res, next) {
+    const capacity = req.query.capacity || 99999;
+    res.locals.capacity = capacity;
+    next();
+  }
+
 module.exports = {
     list: [asyncErrorBoundary(list)],
     create: [
@@ -68,5 +79,6 @@ module.exports = {
         tableNameIsValid,
         capacityIsPositiveInteger,
         asyncErrorBoundary(create)
-    ]
+    ],
+    listFree: [getCapacity, asyncErrorBoundary(listFree)]
 }

@@ -6,6 +6,15 @@ async function list(){
   .orderBy("table_name");
 }
 
+async function listFree(minCapacity){
+  console.log(minCapacity);
+  return knex("tables")
+  .select("*")
+  .where({reservation_id: null})
+  .andWhere("capacity", ">=", minCapacity)
+  .orderBy("table_name");
+}
+
 function create(table) {
     return knex("tables")
       .insert(table)
@@ -16,4 +25,5 @@ function create(table) {
 module.exports = {
     list,
     create,
+    listFree,
 }
