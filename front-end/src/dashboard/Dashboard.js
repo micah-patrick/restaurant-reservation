@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationCard from "../reservations/ReservationCard";
+import TableCard from "../tables/TableCard";
 import { useHistory } from "react-router-dom";
 import useQuery from "../utils/useQuery";
 import {previous, next, getDisplayDate} from "../utils/date-time";
@@ -21,11 +22,15 @@ function Dashboard({ date }) {
 
   const history = useHistory();
   const [reservations, setReservations] = useState([]);
+  const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [tablesError, setTablesError] = useState(null);
   const [displayReservations, setDisplayReservations] = useState("");
+  const [displayTables, setDisplayTables] = useState("");
 
 
-  useEffect(loadDashboard, [date]);
+  useEffect(loadReservations, [date]);
+  useEffect(loadTables, [reservations])
 
   useEffect(() => {
     setDisplayReservations(
@@ -40,14 +45,35 @@ function Dashboard({ date }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reservations]);
 
-  function loadDashboard() {
+  useEffect(() => {
+    setDisplayTables(
+      tables.map((table, index) => {
+        return (
+          <span key={index}>
+            <TableCard table={table} />
+          </span>
+        )
+      })
+      )
+  }, [tables])
+
+  function loadReservations() {
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
+    .then(setReservations)
+    .catch(setReservationsError)
     return () => abortController.abort();
   }
+  function loadTables() {
+    const abortController = new AbortController();
+    setTablesError(null);
+    listTables(abortController.signal)
+    .then(setTables)
+    .catch(setTablesError);
+    return () => abortController.abort()
+  }
+
 
 
 
@@ -78,8 +104,16 @@ function Dashboard({ date }) {
         </button>
       </div>
       <ErrorAlert error={reservationsError} />
+      <ErrorAlert error={tablesError} />
       <div className="row" >
         {displayReservations}
+      </div>
+
+      <div className="d-md-flex mb-3">
+        <h4 className="mb-0">Tables</h4>
+      </div>
+      <div className="row" >
+        {displayTables}
       </div>
     </main>
   );

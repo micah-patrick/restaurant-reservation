@@ -167,6 +167,23 @@ function restaurantIsOpen(req, res, next) {
   })
 }
 
+async function reservationExists(req, res, next) {
+  const reservation = await service.read(req.params.reservation_id);
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  next({
+    status: 404,
+    message: `Reservation cannot be found.`,
+  })
+}
+
+async function read(req, res) {
+  const {reservation} = res.locals;
+  res.json({ data: reservation })
+}
+
 module.exports = {
   list: [asyncErrorBoundary(getDate), asyncErrorBoundary(list)],
   create: [
@@ -181,6 +198,7 @@ module.exports = {
     restaurantIsOpen,
     asyncErrorBoundary(create)
   ],
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)]
 };
 
 
