@@ -4,7 +4,7 @@
  
  router
      .route("/")
-    //  .get(controller.list)
+     .get(controller.list)
      .post(controller.create)
      .all(methodNotAllowed);
  
