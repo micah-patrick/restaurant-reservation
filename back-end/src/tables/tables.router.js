@@ -7,6 +7,11 @@ router
     .get(controller.listFree)
     .all(methodNotAllowed);
 
+router
+    .route("/:table_id/seat/")
+    .put(controller.update)
+    .all(methodNotAllowed);
+
  router
      .route("/")
      .get(controller.list)

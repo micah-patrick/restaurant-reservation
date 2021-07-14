@@ -71,7 +71,7 @@ function Dashboard({ date }) {
     listTables(abortController.signal)
     .then(setTables)
     .catch(setTablesError);
-    return () => abortController.abort()
+    return () => abortController.abort();
   }
 
 

@@ -71,6 +71,29 @@ async function create(req, res) {
     next();
   }
 
+  async function tableExists(req, res, next) {
+    const table = await service.read(req.params.table_id);
+    if (table) {
+      res.locals.table = table;
+      return next();
+    }
+    next({
+      status: 404,
+      message: `Table cannot be found.`
+    })
+  }
+
+  async function update(req, res, next) {
+    const updatedTable = {
+      ...res.locals.table,
+      ...req.body.data,
+    }
+    const data = await service.update(updatedTable);
+    res.json({ data });
+  }
+
+
+
 module.exports = {
     list: [asyncErrorBoundary(list)],
     create: [
@@ -80,5 +103,6 @@ module.exports = {
         capacityIsPositiveInteger,
         asyncErrorBoundary(create)
     ],
-    listFree: [getCapacity, asyncErrorBoundary(listFree)]
+    listFree: [getCapacity, asyncErrorBoundary(listFree)],
+    update: [asyncErrorBoundary(tableExists), asyncErrorBoundary(update)],
 }
