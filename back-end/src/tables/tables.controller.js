@@ -1,4 +1,5 @@
 const service = require("./tables.service");
+const reservationService = require("../reservations/reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require("../errors/hasProperties");
 
@@ -72,18 +73,19 @@ async function create(req, res) {
   }
 
   async function tableExists(req, res, next) {
-    const table = await service.read(req.params.table_id);
+    const tableId = req.params.table_id;
+    const table = await service.read(tableId);
     if (table) {
       res.locals.table = table;
       return next();
     }
     next({
       status: 404,
-      message: `Table cannot be found.`
+      message: `Table ${tableId} cannot be found.`
     })
   }
 
-  async function update(req, res, next) {
+  async function seat(req, res, next) {
     const updatedTable = {
       ...res.locals.table,
       ...req.body.data,
@@ -93,6 +95,91 @@ async function create(req, res) {
   }
 
 
+
+  function hasOnlyReservationId(req, res, next) {
+    const { data = {} } = req.body;
+  
+    const invalidFields = Object.keys(data).filter(
+      (field) => !["reservation_id"].includes(field)
+    );
+  
+    if (invalidFields.length) {
+      return next({
+        status: 400,
+        message: `Invalid field(s): ${invalidFields.join(", ")}`,
+      });
+    }
+    next();
+  }
+
+  function hasReservationId(req, res, next) {
+    const { data = {} } = req.body;
+    if (data.reservation_id){
+      return next();
+    }
+    next({
+      status: 400,
+      message: `reservation_id is a required field.`
+    });
+  }
+
+  async function reservationIdExists(req, res, next) {
+    const {reservation_id} = req.body.data;
+    const reservation = await reservationService.read(reservation_id);
+    if (reservation) {
+      res.locals.reservation = reservation;
+      return next();
+    }
+    next({
+      status: 404,
+      message: `Reservation ${reservation_id} cannot be found.`
+    })
+  }
+
+  function hasCapacity(req, res, next) {
+    const {capacity} = res.locals.table;
+    const {people} = res.locals.reservation;
+
+    if (capacity >= people) {
+      return next();
+    }
+    next({
+      status: 400,
+      message: `This Reservation requires a capacity of at least ${people}.`
+    });
+  }
+
+  function tableIsFree(req, res, next) {
+    const {reservation_id} = res.locals.table;
+    if (reservation_id) {
+      return next({
+        status: 400,
+        message: `This table is occupied.`
+      });
+    }
+    next();
+  }
+  
+  function tableIsOccupied(req, res, next) {
+    const {reservation_id} = res.locals.table;
+    if (reservation_id) {
+      return next();
+    }
+    next({
+      status: 400,
+      message: `This table is not occupied.`
+    });
+  }
+
+  async function unseat(req, res, next) {
+    const {table} = res.locals;
+    const updatedTable = {
+      ...table,
+      reservation_id: null,
+    }
+    const data = await service.update(updatedTable);
+    res.json({ data });
+  }
 
 module.exports = {
     list: [asyncErrorBoundary(list)],
@@ -104,5 +191,18 @@ module.exports = {
         asyncErrorBoundary(create)
     ],
     listFree: [getCapacity, asyncErrorBoundary(listFree)],
-    update: [asyncErrorBoundary(tableExists), asyncErrorBoundary(update)],
+    seat: [
+      hasOnlyReservationId,
+      hasReservationId,
+      asyncErrorBoundary(reservationIdExists),
+      asyncErrorBoundary(tableExists), 
+      hasCapacity,
+      tableIsFree,
+      asyncErrorBoundary(seat)
+    ],
+    unseat: [
+      asyncErrorBoundary(tableExists),
+      tableIsOccupied,
+      asyncErrorBoundary(unseat)
+    ]
 }

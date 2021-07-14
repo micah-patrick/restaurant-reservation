@@ -24,7 +24,7 @@ export default function ReservationCard({reservation}) {
                         className="btn btn-primary mx-1 mb-3"
                         to={`/reservations/${reservation_id}/seat`}
                     >
-                    <span className="oi oi-check mr-2" />
+                    <span className="oi oi-people mr-2" />
                     Seat
                     </Link>
                 </div>

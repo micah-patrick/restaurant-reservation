@@ -27,10 +27,14 @@ function Dashboard({ date }) {
   const [tablesError, setTablesError] = useState(null);
   const [displayReservations, setDisplayReservations] = useState("");
   const [displayTables, setDisplayTables] = useState("");
-
+  const [updateCount, setUpdateCount] = useState(0);
 
   useEffect(loadReservations, [date]);
-  useEffect(loadTables, [reservations])
+  useEffect(loadTables, [reservations, updateCount]);
+
+  function tablesUpdated(){ 
+    setUpdateCount(updateCount + 1); 
+  };
 
   useEffect(() => {
     setDisplayReservations(
@@ -50,7 +54,7 @@ function Dashboard({ date }) {
       tables.map((table, index) => {
         return (
           <span key={index}>
-            <TableCard table={table} />
+            <TableCard table={table} tablesUpdated={tablesUpdated} />
           </span>
         )
       })
