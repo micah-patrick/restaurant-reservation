@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { unassignTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
@@ -7,7 +6,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 export default function TableCard({table, tablesUpdated}) {
 
     const {table_id, table_name, capacity, reservation_id, created_at, updated_at} = table;
-    const history = useHistory();
+
 
 
     const [tableStatus, setTableStatus] = useState("Loading...");
@@ -33,6 +32,7 @@ export default function TableCard({table, tablesUpdated}) {
             setTableStatus("Free")
             setFinishButtonDisplay("")
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [table, reservation_id, table_id])
 
     const handleSubmit = (event) => {

@@ -50,11 +50,12 @@ export default function SeatForm() {
         const abortController = new AbortController();
         setSeatError(null);
         assignTable(reservation_id, table_id, abortController.signal)
-        .then((result) => { history.push(`/dashboard`) })
+        .then(() => { history.push(`/dashboard`) })
         .catch(setSeatError);
         return () => abortController.abort();
     }
 
+    
 
 console.log(table_id);
 

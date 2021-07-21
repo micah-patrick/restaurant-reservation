@@ -24,6 +24,7 @@ export default function ReservationNew() {
             "reservation_date": reservationDate,
             "reservation_time": reservationTime,
             "people": Number(people),
+            status: "booked"
         }
         createReservation(newReservation)
         .then((result) => {
@@ -33,6 +34,14 @@ export default function ReservationNew() {
             })
             .catch(setReservationsError)
     }
+
+    const phoneFieldHandler = (event) => {
+      let input = event.target.value;
+      if(input.length === 10){
+          input = input[0]+input[1]+input[2]+"-"+input[3]+input[4]+input[5]+"-"+input[6]+input[7]+input[8]+input[9]
+      }
+      setMobileNumber(input)
+  }
 
 
 
@@ -76,7 +85,7 @@ export default function ReservationNew() {
             type="tel"
             pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
             name="mobile_number"
-            onChange={(event) => {setMobileNumber(event.target.value);}}
+            onChange={phoneFieldHandler}
             value={mobileNumber}
             required
           />

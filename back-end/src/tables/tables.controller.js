@@ -90,10 +90,13 @@ async function create(req, res) {
       ...res.locals.table,
       ...req.body.data,
     }
-    const data = await service.update(updatedTable);
+    const updatedReservation = {
+      ...res.locals.reservation,
+      status: "seated"
+    }
+    const data = await service.update(updatedTable, updatedReservation);
     res.json({ data });
   }
-
 
 
   function hasOnlyReservationId(req, res, next) {
@@ -133,6 +136,30 @@ async function create(req, res) {
     next({
       status: 404,
       message: `Reservation ${reservation_id} cannot be found.`
+    })
+  }
+
+  async function findReservation(req, res, next) {
+    const {reservation_id} = res.locals.table;
+    const reservation = await reservationService.read(reservation_id);
+    if (reservation) {
+      res.locals.reservation = reservation;
+      return next();
+    }
+    next({
+      status: 404,
+      message: `Reservation ${reservation_id} cannot be found.`
+    })
+  }
+
+  function reservationIsBooked(req, res, next){
+    const {status} = res.locals.reservation;
+    if (status === "booked") {
+      return next();
+    }
+    next({
+      status: 400,
+      message: `Reservation status ${status} is not valid`
     })
   }
 
@@ -177,7 +204,11 @@ async function create(req, res) {
       ...table,
       reservation_id: null,
     }
-    const data = await service.update(updatedTable);
+    const updatedReservation = {
+      ...res.locals.reservation,
+      status: "finished"
+    }
+    const data = await service.update(updatedTable, updatedReservation);
     res.json({ data });
   }
 
@@ -195,6 +226,7 @@ module.exports = {
       hasOnlyReservationId,
       hasReservationId,
       asyncErrorBoundary(reservationIdExists),
+      reservationIsBooked,
       asyncErrorBoundary(tableExists), 
       hasCapacity,
       tableIsFree,
@@ -203,6 +235,7 @@ module.exports = {
     unseat: [
       asyncErrorBoundary(tableExists),
       tableIsOccupied,
+      asyncErrorBoundary(findReservation),
       asyncErrorBoundary(unseat)
     ]
 }

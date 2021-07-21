@@ -29,11 +29,22 @@ async function read(table_id){
     .first();
 }
 
-async function update(updatedTable){
-  return knex("tables")
-  .select("*")
-  .where({table_id : updatedTable.table_id})
-  .update(updatedTable, "*");
+async function update(updatedTable, updatedReservation){
+  const trx = await knex.transaction();
+
+  return trx("tables")
+    .select("*")
+    .where({table_id : updatedTable.table_id})
+    .update(updatedTable, "*")
+  .then( function(){
+    return trx("reservations")
+      .select("*")
+      .where({reservation_id: updatedReservation.reservation_id})
+      .update(updatedReservation, "*")
+  })
+  .then(trx.commit)
+  .catch(trx.rollback)
+
 }
 
 module.exports = {

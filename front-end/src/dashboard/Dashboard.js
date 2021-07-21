@@ -29,7 +29,7 @@ function Dashboard({ date }) {
   const [displayTables, setDisplayTables] = useState("");
   const [updateCount, setUpdateCount] = useState(0);
 
-  useEffect(loadReservations, [date]);
+  useEffect(loadReservations, [date, updateCount]);
   useEffect(loadTables, [reservations, updateCount]);
 
   function tablesUpdated(){ 
@@ -39,6 +39,9 @@ function Dashboard({ date }) {
   useEffect(() => {
     setDisplayReservations(
       reservations.map((reservation, index) => {
+        // if(reservation.status === "finished") {
+        //   return "";
+        // }
         return (
           <span key={index}>
             <ReservationCard reservation={reservation} />
@@ -59,6 +62,7 @@ function Dashboard({ date }) {
         )
       })
       )
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tables])
 
   function loadReservations() {

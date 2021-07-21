@@ -8,8 +8,8 @@ const hasProperties = require("../errors/hasProperties");
 
 
 async function list(req, res) {
-  const {date} = res.locals;
-  const data = await service.list(date);
+  const {date, mobileNumber} = res.locals;
+  const data = mobileNumber ? await service.searchList(mobileNumber) : await service.list(date);
   res.json({ data });
 }
 
@@ -18,13 +18,21 @@ async function create(req, res) {
   res.status(201).json({ data });
 }
 
-function getDate(req, res, next) {
+function getDateFromQuery(req, res, next) {
   let today = new Date();
   today = `${today.getFullYear().toString(10)}-${(today.getMonth() + 1)
     .toString(10)
     .padStart(2, "0")}-${today.getDate().toString(10).padStart(2, "0")}`;
   const date = req.query.date || today;
   res.locals.date = date;
+  next();
+}
+
+function getMobileNumberFromQuery(req, res, next) {
+  const mobileNumber = req.query.mobile_number;
+  if (mobileNumber) {
+    res.locals.mobileNumber = mobileNumber;
+  }
   next();
 }
 
@@ -35,6 +43,7 @@ const VALID_PROPERTIES = [
   "reservation_date",
   "reservation_time",
   "mobile_number",
+  "status",
 ];
 
 function hasOnlyValidProperties(req, res, next) {
@@ -167,15 +176,27 @@ function restaurantIsOpen(req, res, next) {
   })
 }
 
+function statusIsBooked(req, res, next){
+  const {status} = req.body.data;
+  if (status === "booked"){
+    return next();
+  }
+  next({
+    status: 400,
+    message: `"${status}" is not a valid status. New Reservations must have a status of "booked"`
+  })
+}
+
 async function reservationExists(req, res, next) {
-  const reservation = await service.read(req.params.reservation_id);
+  const {reservation_id} = req.params;
+  const reservation = await service.read(reservation_id);
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
   }
   next({
     status: 404,
-    message: `Reservation cannot be found.`,
+    message: `Reservation ${reservation_id} cannot be found.`,
   })
 }
 
@@ -184,8 +205,69 @@ async function read(req, res) {
   res.json({ data: reservation })
 }
 
+function hasOnlyStatusProperty(req, res, next) {
+  const { data = {} } = req.body;
+  const invalidFields = Object.keys(data) .filter(
+    (field) => !["status"].includes(field)
+  );
+  if (invalidFields.length) {
+    return next({
+      status: 400, 
+      message: `Invalid field(s): ${invalidFields.join(', ')}`,
+    });
+  }
+  next();
+}
+
+function hasStatusProperty(req, res, next) {
+  const { data = {} } = req.body;
+  if (data.status) {
+    return next();
+  }
+  next({
+    status: 400,
+    message: `status is a required field`,
+  });
+}
+
+function statusIsValid(req, res, next) {
+  const { status } = req.body.data;
+  const validStatus = ["booked", "seated", "finished"];
+
+  if (validStatus.includes(status)) {
+    res.locals.status = status;
+    return next();
+  }
+  next({
+    status: 400,
+    message: `${status} is not a valid status. Status must be booked, seated, or finished`,
+  })
+}
+
+function currentStatusIsNotFinished(req, res, next){
+  const {status} = res.locals.reservation;
+  if (status === "finished") {
+    return next({
+      status: 400,
+      message: `Reservations that are finished cannot be updated.`
+    });
+  }
+  next();
+}
+
+async function updateStatus(req, res) {
+  const {status, reservation} = res.locals;
+  const updatedReservation = {
+    ...reservation,
+    status,
+  }
+  const result = await service.updateStatus(updatedReservation);
+  const data = result[0];
+  res.json({ data });
+}
+
 module.exports = {
-  list: [asyncErrorBoundary(getDate), asyncErrorBoundary(list)],
+  list: [getDateFromQuery, getMobileNumberFromQuery, asyncErrorBoundary(list)],
   create: [
     hasOnlyValidProperties, 
     hasRequiredProperties, 
@@ -196,11 +278,16 @@ module.exports = {
     dateIsNotTuesday,
     dateIsFuture,
     restaurantIsOpen,
+    statusIsBooked,
     asyncErrorBoundary(create)
   ],
-  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)]
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
+  updateStatus: [
+    hasOnlyStatusProperty, 
+    hasStatusProperty, 
+    statusIsValid, 
+    asyncErrorBoundary(reservationExists),
+    currentStatusIsNotFinished, 
+    asyncErrorBoundary(updateStatus)
+  ],
 };
-
-
-//1030 am
-//930pm
