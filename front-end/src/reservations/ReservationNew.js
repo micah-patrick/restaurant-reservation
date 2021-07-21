@@ -24,7 +24,7 @@ export default function ReservationNew() {
             "reservation_date": reservationDate,
             "reservation_time": reservationTime,
             "people": Number(people),
-            status: "booked"
+            "status": "booked"
         }
         createReservation(newReservation)
         .then((result) => {

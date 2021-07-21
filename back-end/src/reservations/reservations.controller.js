@@ -14,7 +14,9 @@ async function list(req, res) {
 }
 
 async function create(req, res) {
-  const data = await service.create(req.body.data);
+  let reservation = req.body.data;
+  reservation = {...reservation, status: "booked"}
+  const data = await service.create(reservation);
   res.status(201).json({ data });
 }
 
@@ -44,6 +46,14 @@ const VALID_PROPERTIES = [
   "reservation_time",
   "mobile_number",
   "status",
+];
+const REQUIRED_PROPERTIES = [
+  "first_name",
+  "last_name",
+  "people",
+  "reservation_date",
+  "reservation_time",
+  "mobile_number",
 ];
 
 function hasOnlyValidProperties(req, res, next) {
@@ -75,7 +85,7 @@ function peopleIsPositiveInteger(req, res, next) {
 
 }
 
-const hasRequiredProperties = hasProperties(...VALID_PROPERTIES);
+const hasRequiredProperties = hasProperties(...REQUIRED_PROPERTIES);
 
 function mobileNumberIsValid(req, res, next) {
   const pattern = /^[1-9]\d{2}-\d{3}-\d{4}/;
@@ -178,7 +188,7 @@ function restaurantIsOpen(req, res, next) {
 
 function statusIsBooked(req, res, next){
   const {status} = req.body.data;
-  if (status === "booked"){
+  if (status === "booked" || !status){
     return next();
   }
   next({
