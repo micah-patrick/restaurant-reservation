@@ -33,12 +33,19 @@ export default function TableNew() {
       <h2> New Table</h2>
       <ErrorAlert error={error} />
       <form onSubmit={handleSubmit}>
-        {/*name input*/}
-        <div className="form-group">
-          <label htmlFor="tableName">Table Name</label>
+
+      <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="basic-addon1">
+              <span className="oi oi-layers mr-2" ></span>
+            </span>
+          </div>
+          <label className="sr-only" htmlFor="table_name">Table Name</label>
           <input
             className="form-control"
-            id="tableName"
+            aria-label="table_name"
+            placeholder="Table Name"
+            id="table_name"
             type="text"
             name="table_name"
             onChange={(event) => {setTableName(event.target.value);}}
@@ -47,10 +54,18 @@ export default function TableNew() {
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="capacity">Capacity</label>
+
+        <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="basic-addon1">
+              <span className="oi oi-people mr-2" ></span>
+              Capacity
+            </span>
+          </div>
+          <label className="sr-only" htmlFor="capacity">Capacity</label>
           <input
             className="form-control"
+            aria-label="table_name"
             id="capacity"
             type="number"
             name="capacity"
@@ -62,7 +77,7 @@ export default function TableNew() {
         </div>
        
         {/*cancel button*/}
-        <button className="btn btn-secondary mx-1 mb-3" to="/"
+        <button className="btn btn-secondary mr-1 mb-3" to="/"
             onClick={() =>history.goBack()}
         >
           <span className="oi oi-circle-x mr-2" />

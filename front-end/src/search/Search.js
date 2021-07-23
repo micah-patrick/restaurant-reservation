@@ -9,8 +9,10 @@ export default function Search() {
 
     const [searchInput, setSearchInput] = useState("");
     const [searchError, setSearchError] = useState(null);
-    const [reservations, setReservations] = useState([]);
-    const [displayReservations, setDisplayReservations] = useState(<Loading />);
+    const [reservations, setReservations] = useState("");
+    const [displayReservations, setDisplayReservations] = useState("");
+
+    console.log(reservations);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -28,11 +30,12 @@ export default function Search() {
                 );
               })
             );
-        } else {
+        } else if (reservations !== ""){
             setDisplayReservations(
                 <div className="alert alert-info border border-info my-2">No reservations found</div>
             )
         }
+        console.log(reservations);
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [reservations]);
 
@@ -42,6 +45,7 @@ export default function Search() {
     }
 
     function loadReservations() {
+      console.log(searchInput);
         setDisplayReservations(<Loading />)
         const abortController = new AbortController();
         setSearchError(null);

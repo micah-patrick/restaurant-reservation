@@ -1,5 +1,5 @@
 .side-bar {
-  background-color: #f27034;
+  background-color: #F15A24;
   min-width: 200px;
 }
 
@@ -9,8 +9,41 @@ main,
   padding-bottom: 20px;
 }
 
+.navbar {
+  position: fixed;
+}
 @media only screen and (min-width: 768px) {
   .side-bar {
     min-height: 100vh;
   }
+}
+
+@media only screen and (max-width: 768px) {
+  .navbar,
+  .navbar-brand {
+    position: fixed;
+    z-index: 1030;
+    left: 0;
+    right: 0;
+    background: #F15A24;
+  }
+  .navbar{
+    bottom: 0;
+  }
+  span.navText {
+    display: none;
+  }
+  .navbar-brand {
+    top: 0;
+  }
+  .navbar-nav {
+    flex-direction: row;
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+  }
+  main{
+  padding-top: 20px;
+  padding-bottom: 50px;
+}
 }

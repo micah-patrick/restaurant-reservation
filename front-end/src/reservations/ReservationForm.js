@@ -84,6 +84,11 @@ export default function ReservationForm({editMode}) {
       setResState((current) => ({...current, mobile_number: input})); 
   }
 
+    //   const searchFieldHandler = (event) => {
+    //     let input = event.target.value.replace(/\D/g, "");
+    //     setSearchInput(input.slice(0,10))
+    // }
+
 
 
     return(
@@ -92,10 +97,19 @@ export default function ReservationForm({editMode}) {
       <ErrorAlert error={reservationError} />
       <form onSubmit={handleSubmit}>
         {/*name input*/}
-        <div className="form-group">
-          <label htmlFor="first_name">First Name</label>
+
+        <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text">
+              <span className="oi oi-person mr-2" ></span>
+              Name
+            </span>
+          </div>
+          <label className="sr-only" htmlFor="first_name">First Name</label>
           <input
             className="form-control"
+            placeholder="First"
+            aria-label="First name"
             id="first_name"
             type="text"
             name="first_name"
@@ -104,11 +118,11 @@ export default function ReservationForm({editMode}) {
             maxLength="50"
             required
           />
-        </div>
-        <div className="form-group">
-          <label htmlFor="last_name">Last Name</label>
+          <label className="sr-only" htmlFor="first_name">Last Name</label>
           <input
             className="form-control"
+            placeholder="Last"
+            aria-label="Last name"
             id="last_name"
             type="text"
             name="last_name"
@@ -118,10 +132,19 @@ export default function ReservationForm({editMode}) {
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="mobil_number">Mobile Number (xxx-xxx-xxxx)</label>
+
+        <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="basic-addon1">
+              <span className="oi oi-phone mr-2" ></span>
+              Mobile Number
+            </span>
+          </div>
+          <label className="sr-only" htmlFor="first_name">Mobile Number</label>
           <input
             className="form-control"
+            placeholder="xxx-xxx-xxxx"
+            aria-label="mobile_number"
             id="mobile_number"
             type="tel"
             pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
@@ -131,10 +154,18 @@ export default function ReservationForm({editMode}) {
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="reservation_date">Reservation Date</label>
+
+        <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="basic-addon1">
+              <span className="oi oi-calendar mr-2" ></span>
+              Date
+            </span>
+          </div>
+          <label className="sr-only" htmlFor="reservation_date">Reservation Date</label>
           <input
             className="form-control"
+            aria-label="reservation_date"
             id="reservation_date"
             type="date"
             name="reservation_date"
@@ -143,10 +174,18 @@ export default function ReservationForm({editMode}) {
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="reservation_time">Reservation Time</label>
+
+        <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="basic-addon1">
+              <span className="oi oi-clock mr-2" ></span>
+              Time
+            </span>
+          </div>
+          <label className="sr-only" htmlFor="reservation_time">Reservation Time</label>
           <input
             className="form-control"
+            aria-label="reservation_time"
             id="reservation_time"
             type="time"
             name="reservation_time"
@@ -155,10 +194,18 @@ export default function ReservationForm({editMode}) {
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="people">People</label>
+
+        <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="basic-addon1">
+              <span className="oi oi-people mr-2" ></span>
+              People
+            </span>
+          </div>
+          <label className="sr-only" htmlFor="people">People</label>
           <input
             className="form-control"
+            aria-label="people"
             id="people"
             type="number"
             name="people"
@@ -168,9 +215,18 @@ export default function ReservationForm({editMode}) {
             required
           />
         </div>
+
+
+
+
+
+
+
+
+     
        
         {/*cancel button*/}
-        <button className="btn btn-secondary mx-1 mb-3" to="/"
+        <button className="btn btn-secondary mr-1 mb-3" to="/"
             onClick={() =>history.goBack()}
         >
           <span className="oi oi-circle-x mr-2" />

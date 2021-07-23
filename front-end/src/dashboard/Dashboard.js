@@ -102,25 +102,34 @@ function Dashboard({ date }) {
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">{displayDate.display}</h4>
       </div>
-      <div className="d-flex d-md-inline mb-3 btn-group">
-        <button className="btn btn-info btn-sm mb-3"
-          onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
-        >
-          <span className="oi oi-chevron-left mr-2" />
-          Previous
-        </button>
-        <button className="btn btn-info btn-sm mb-3"
-          onClick={() => history.push(`/dashboard`)}
-        >
-          <span className="oi oi-calendar mr-2" />
-          Today
-        </button>
-        <button className="btn btn-info btn-sm mb-3"
-          onClick={() => history.push(`/dashboard?date=${next(date)}`)}
-        >
-          Next
-          <span className="oi oi-chevron-right ml-2" />
-        </button>
+      <div className="input-group input-group-sm mb-3">
+        <div className="d-flex d-md-inline mb-3 btn-group input-group-prepend">
+          <button className="btn btn-info btn-sm mb-3"
+            onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
+          >
+            <span className="oi oi-chevron-left mr-2" />
+            Previous
+          </button>
+          <button className="btn btn-info btn-sm mb-3"
+            onClick={() => history.push(`/dashboard`)}
+          >
+            <span className="oi oi-calendar mr-2" />
+            Today
+          </button>
+          <button className="btn btn-info btn-sm mb-3"
+            onClick={() => history.push(`/dashboard?date=${next(date)}`)}
+          >
+            Next
+            <span className="oi oi-chevron-right ml-2" />
+          </button>
+        </div>
+        <input 
+          type="date"
+          className="form-control"
+          style={{maxWidth: "150px"}}
+          onChange={(event) => history.push(`/dashboard?date=${event.target.value}`)}
+          value={date}
+        />
       </div>
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations</h4>
