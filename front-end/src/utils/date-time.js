@@ -106,3 +106,10 @@ export function getDisplayDate(date) {
   displayDate.display = `${displayDate.day}, ${displayDate.month} ${displayDate.date} ${displayDate.year}`;
   return displayDate;
 }
+
+export function getDisplayTime(time) {
+  let [hour, minute] = time.split(":");
+  const amPm = (hour <= 11) ? "am" : "pm";
+  hour = (hour <= 12) ? hour : hour - 12;
+  return (hour + ":" + minute + amPm);
+}

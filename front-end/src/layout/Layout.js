@@ -19,7 +19,9 @@ function Layout() {
           <Menu />
         </div>
         <div className="col">
-          <Routes />
+          <main>
+            <Routes />
+          </main>
         </div>
       </div>
     </div>

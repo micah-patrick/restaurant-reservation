@@ -5,7 +5,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 
 export default function TableCard({table, tablesUpdated}) {
 
-    const {table_id, table_name, capacity, reservation_id, created_at, updated_at} = table;
+    const {table_id, table_name, capacity, reservation_id} = table;
 
 
 
@@ -13,13 +13,17 @@ export default function TableCard({table, tablesUpdated}) {
     const [finishButtonDisplay, setFinishButtonDisplay] = useState("");
     const [seatError, setSeatError] = useState(null);
 
+    const statusColor = {
+        Occupied: "primary",
+        Free: "success",
+    }
 
     useEffect(() =>{
         if (reservation_id) {
             setTableStatus("Occupied")
             setFinishButtonDisplay(
                 <button 
-                    className="btn btn-primary mx-1 mb-3"
+                    className="btn btn-sm btn-secondary"
                     data-table-id-finish={table_id}
                     to={`/reservations/`}
                     onClick={handleSubmit}
@@ -52,24 +56,23 @@ export default function TableCard({table, tablesUpdated}) {
 
 
     return (
-        
-        <div className="col">
-            <div className="card" style={{width: "18rem"}}>
-                <div className="card-body">
-                    <h5 className="card-title">{table_name}</h5>
-                    <ErrorAlert error={seatError} />
-                    <h6 className="card-subtitle mb-2 text-muted">{`Capacity: ${capacity}`}</h6>
-                    <p className="card-text">{`Created at: ${created_at}`}</p>
-                    <p className="card-text">{`Updated at: ${updated_at}`}</p>
-                    <p 
-                        className="card-text"
-                        data-table-id-status={table.table_id}
-                    >
-                        {tableStatus}
-                    </p>
+        <>
+            <ErrorAlert error={seatError} />
+            <div className="row flex-column flex-md-row bg-light border mx-1 my-3 px-2 py-2" >
+                {/* <div className={`col p-0 ml-2 bg-${statusColor[tableStatus]}`} style={{maxWidth: "10px"}}></div> */}
+                <div className={`col text-center text-md-left align-self-center`} style={{maxWidth: "100px"}}>
+                    <span className={`my-2 badge text-white bg-${statusColor[tableStatus]}`} data-table-id-status={table.table_id}>{tableStatus}</span>
+                </div>
+                <div className="col align-self-center text-center text-md-left">
+                    <h5 className="mb-1">{table_name}</h5>
+                </div>
+                <div className="col align-self-center text-center text-md-left">
+                    <p className="mb-0">{`${capacity} Top`}</p>
+                </div>
+                <div className="col align-self-center text-center text-md-right my-2">
                     {finishButtonDisplay}
                 </div>
             </div>
-        </div>
+        </>
     )
 }

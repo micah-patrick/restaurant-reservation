@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { createReservation } from "../utils/api";
+import { createReservation, readReservation } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import { useParams } from "react-router-dom";
 
-export default function ReservationNew() {
+export default function ReservationEdit() {
 
     const history = useHistory();
+    const reservation_id = useParams().reservation_id
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -14,6 +16,17 @@ export default function ReservationNew() {
     const [reservationTime, setReservationTime] = useState("");
     const [people, setPeople] = useState(1);
     const [reservationsError, setReservationsError] = useState(null);
+
+    useEffect(loadReservation, [reservation_id]);
+
+    function loadReservation() {
+        const abortController = new AbortController();
+        setReservationError(null);
+        readReservation(reservation_id, abortController.signal)
+        .then(setReservation)
+        .catch(setReservationError);
+        return () => abortController.abort();
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -145,3 +158,4 @@ export default function ReservationNew() {
     </>
     )
 }
+

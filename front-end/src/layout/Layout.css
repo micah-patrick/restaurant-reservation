@@ -1,4 +1,16 @@
 .side-bar {
-  background-color: #393a44;
+  background-color: #f27034;
   min-width: 200px;
+}
+
+main,
+.side-bar {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+@media only screen and (min-width: 768px) {
+  .side-bar {
+    min-height: 100vh;
+  }
 }

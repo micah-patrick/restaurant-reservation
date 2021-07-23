@@ -46,6 +46,9 @@ const VALID_PROPERTIES = [
   "reservation_time",
   "mobile_number",
   "status",
+  "created_at",
+  "updated_at",
+  "reservation_id"
 ];
 const REQUIRED_PROPERTIES = [
   "first_name",
@@ -212,7 +215,15 @@ async function reservationExists(req, res, next) {
 
 async function read(req, res) {
   const {reservation} = res.locals;
-  res.json({ data: reservation })
+  let date = reservation.reservation_date;
+  date = `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
+    .toString(10)
+    .padStart(2, "0")}-${date.getDate().toString(10).padStart(2, "0")}`
+  const data = {
+    ...reservation,
+    reservation_date: date,
+  }
+  res.json({ data })
 }
 
 function hasOnlyStatusProperty(req, res, next) {
@@ -242,7 +253,7 @@ function hasStatusProperty(req, res, next) {
 
 function statusIsValid(req, res, next) {
   const { status } = req.body.data;
-  const validStatus = ["booked", "seated", "finished"];
+  const validStatus = ["booked", "seated", "finished", "cancelled"];
 
   if (validStatus.includes(status)) {
     res.locals.status = status;
@@ -276,13 +287,23 @@ async function updateStatus(req, res) {
   res.json({ data });
 }
 
+async function update(req, res){
+  const updatedReservation = {
+    ...res.locals.reservation,
+    ...req.body.data,
+  }
+  const result = await service.update(updatedReservation);
+  const data = result[0];
+  res.json({ data });
+}
+
 module.exports = {
   list: [getDateFromQuery, getMobileNumberFromQuery, asyncErrorBoundary(list)],
   create: [
     hasOnlyValidProperties, 
     hasRequiredProperties, 
     peopleIsPositiveInteger,
-    mobileNumberIsValid,
+    // mobileNumberIsValid,
     dateIsValid,
     timeIsValid,
     dateIsNotTuesday,
@@ -300,4 +321,18 @@ module.exports = {
     currentStatusIsNotFinished, 
     asyncErrorBoundary(updateStatus)
   ],
+  update: [
+    asyncErrorBoundary(reservationExists),
+    hasOnlyValidProperties, 
+    hasRequiredProperties, 
+    peopleIsPositiveInteger,
+    // mobileNumberIsValid,
+    dateIsValid,
+    timeIsValid,
+    dateIsNotTuesday,
+    dateIsFuture,
+    restaurantIsOpen,
+    statusIsBooked,
+    asyncErrorBoundary(update)
+  ]
 };

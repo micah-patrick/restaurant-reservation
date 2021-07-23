@@ -38,10 +38,18 @@ function updateStatus(updatedReservation) {
     .update(updatedReservation, "*");
 }
 
+function update(updatedReservation) {
+    return knex("reservations")
+        .select("*")
+        .where({reservation_id: updatedReservation.reservation_id})
+        .update(updatedReservation, "*");
+}
+
 module.exports = {
     list,
     searchList,
     create,
     read,
     updateStatus,
+    update,
 }

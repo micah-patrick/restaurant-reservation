@@ -3,13 +3,14 @@ import React, { useEffect, useState } from "react";
 import ReservationCard from "../reservations/ReservationCard";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import Loading from "../layout/Loading";
 
 export default function Search() {
 
     const [searchInput, setSearchInput] = useState("");
     const [searchError, setSearchError] = useState(null);
     const [reservations, setReservations] = useState([]);
-    const [displayReservations, setDisplayReservations] = useState("");
+    const [displayReservations, setDisplayReservations] = useState(<Loading />);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -29,7 +30,7 @@ export default function Search() {
             );
         } else {
             setDisplayReservations(
-                <h3>No reservations found</h3>
+                <div className="alert alert-info border border-info my-2">No reservations found</div>
             )
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,6 +42,7 @@ export default function Search() {
     }
 
     function loadReservations() {
+        setDisplayReservations(<Loading />)
         const abortController = new AbortController();
         setSearchError(null);
         listReservations({ "mobile_number": searchInput }, abortController.signal)
@@ -52,32 +54,35 @@ export default function Search() {
     return (
         <>
         <h2>Search</h2>
-        <ErrorAlert error={searchError} />
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="searchInput">Mobile Number</label>
+          <div className="input-group mb-3">
+            {/* <div className="input-group-prepend">
+              <label className="input-group-text" htmlFor="searchInput">Mobile Number</label>
+            </div> */}
             <input
               className="form-control"
+              style={{maxWidth: "300px"}}
               id="searchInput"
               type="text"
-              name="searchInput"
+              name="mobile_number"
               onChange={searchFieldHandler}
               value={searchInput}
               maxLength="50"
               required
               placeholder="Enter a customer's phone number"
             />
+            <div className="input-group-append">
+              <button className="btn btn-primary mb-3" type="submit">
+                <span className="oi oi-magnifying-glass mr-2" />
+                Find
+              </button>
+            </div>
           </div>
-          
-          {/*submit button*/}
-          <button className="btn btn-primary mx-1 mb-3" type="submit">
-            <span className="oi oi-magnifying-glass mr-2" />
-            Find
-          </button>
-  
+
         </form>
 
-        <div className="row" >
+        <div>
+            <ErrorAlert error={searchError} />
             {displayReservations}
         </div>
         </>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import Loading from "../layout/Loading";
 import ReservationCard from "../reservations/ReservationCard";
 import TableCard from "../tables/TableCard";
 import { useHistory } from "react-router-dom";
@@ -25,8 +26,8 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tablesError, setTablesError] = useState(null);
-  const [displayReservations, setDisplayReservations] = useState("");
-  const [displayTables, setDisplayTables] = useState("");
+  const [displayReservations, setDisplayReservations] = useState(<Loading />);
+  const [displayTables, setDisplayTables] = useState(<Loading />);
   const [updateCount, setUpdateCount] = useState(0);
 
   useEffect(loadReservations, [date, updateCount]);
@@ -37,35 +38,45 @@ function Dashboard({ date }) {
   };
 
   useEffect(() => {
-    setDisplayReservations(
-      reservations.map((reservation, index) => {
-        // if(reservation.status === "finished") {
-        //   return "";
-        // }
-        return (
-          <span key={index}>
-            <ReservationCard reservation={reservation} />
+    if(reservations.length) {
+      setDisplayReservations(
+        reservations.map((reservation, index) => {
+          return (
+            <span key={index}>
+            <ReservationCard reservation={reservation} tablesUpdated={tablesUpdated} />
           </span>
         );
       })
-    );
+      );
+    } else{
+      setDisplayReservations(
+        <div className="alert alert-info border border-info my-2">No Reservations on {displayDate.display}</div>
+      )
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reservations]);
 
   useEffect(() => {
-    setDisplayTables(
-      tables.map((table, index) => {
-        return (
-          <span key={index}>
-            <TableCard table={table} tablesUpdated={tablesUpdated} />
-          </span>
+    if(tables.length) {
+      setDisplayTables(
+        tables.map((table, index) => {
+          return (
+            <span key={index}>
+              <TableCard table={table} tablesUpdated={tablesUpdated} />
+            </span>
+          )
+        })
         )
-      })
-      )
+      } else{
+        setDisplayTables(
+          <div className="alert alert-info border border-info my-2">No Tables Created</div>
+        )
+      }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tables])
 
   function loadReservations() {
+    setDisplayReservations(<Loading />)
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
@@ -86,44 +97,48 @@ function Dashboard({ date }) {
 
 
   return (
-    <main>
+    <>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for {displayDate.display}</h4>
+        <h4 className="mb-0">{displayDate.display}</h4>
       </div>
-      <div className="d-md-flex mb-3">
-        <button className="btn btn-primary mx-1 mb-3"
+      <div className="d-flex d-md-inline mb-3 btn-group">
+        <button className="btn btn-info btn-sm mb-3"
           onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
         >
           <span className="oi oi-chevron-left mr-2" />
           Previous
         </button>
-        <button className="btn btn-primary mx-1 mb-3"
+        <button className="btn btn-info btn-sm mb-3"
           onClick={() => history.push(`/dashboard`)}
         >
           <span className="oi oi-calendar mr-2" />
           Today
         </button>
-        <button className="btn btn-primary mx-1 mb-3"
+        <button className="btn btn-info btn-sm mb-3"
           onClick={() => history.push(`/dashboard?date=${next(date)}`)}
         >
           Next
           <span className="oi oi-chevron-right ml-2" />
         </button>
       </div>
+      <div className="d-md-flex mb-3">
+        <h4 className="mb-0">Reservations</h4>
+      </div>
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={tablesError} />
-      <div className="row" >
+      <div>
         {displayReservations}
       </div>
 
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Tables</h4>
       </div>
-      <div className="row" >
+      <div className="">
         {displayTables}
       </div>
-    </main>
+      </>
+    
   );
 }
 
