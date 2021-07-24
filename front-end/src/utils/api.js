@@ -5,9 +5,8 @@
 import formatReservationDate from "./format-reservation-date";
 import formatReservationTime from "./format-reservation-date";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
-console.log(process.env.REACT_APP_API_BASE_URL);
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 /**
  * Defines the default headers for these functions to work with `json-server`
@@ -69,26 +68,23 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
-
-
 export async function createReservation(reservation, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
   const options = {
-    method: 'POST',
+    method: "POST",
     headers,
-    body: JSON.stringify({ data: reservation}),
+    body: JSON.stringify({ data: reservation }),
     signal,
   };
   return await fetchJson(url, options, {});
 }
 
-
 export async function createTable(table, signal) {
   const url = new URL(`${API_BASE_URL}/tables`);
   const options = {
-    method: 'POST',
+    method: "POST",
     headers,
-    body: JSON.stringify({ data: table}),
+    body: JSON.stringify({ data: table }),
     signal,
   };
   return await fetchJson(url, options, {});
@@ -98,8 +94,6 @@ export async function listTables(signal) {
   const url = new URL(`${API_BASE_URL}/tables`);
   return await fetchJson(url, { signal }, []);
 }
-
-
 
 export async function listFreeTables(params, signal) {
   const url = new URL(`${API_BASE_URL}/tables/free`);
@@ -119,10 +113,10 @@ export async function assignTable(reservation_id, table_id, signal) {
   const options = {
     method: "PUT",
     headers,
-    body: JSON.stringify({data:{ reservation_id }}),
+    body: JSON.stringify({ data: { reservation_id } }),
     signal,
-  }
-  return await fetchJson(url, options, {reservation_id});
+  };
+  return await fetchJson(url, options, { reservation_id });
 }
 
 export async function unassignTable(table_id, signal) {
@@ -130,7 +124,7 @@ export async function unassignTable(table_id, signal) {
   const options = {
     method: "DELETE",
     signal,
-  }
+  };
   return await fetchJson(url, options);
 }
 
@@ -139,10 +133,10 @@ export async function changeStatus(reservation_id, status, signal) {
   const options = {
     method: "PUT",
     headers,
-    body: JSON.stringify({data:{ status }}),
+    body: JSON.stringify({ data: { status } }),
     signal,
-  }
-  return await fetchJson(url, options, {status});
+  };
+  return await fetchJson(url, options, { status });
 }
 
 export async function updateReservation(reservation, reservation_id, signal) {
@@ -150,8 +144,8 @@ export async function updateReservation(reservation, reservation_id, signal) {
   const options = {
     method: "PUT",
     headers,
-    body: JSON.stringify({data:{ ...reservation }}),
+    body: JSON.stringify({ data: { ...reservation } }),
     signal,
-  }
-  return await fetchJson(url, options, {...reservation});
+  };
+  return await fetchJson(url, options, { ...reservation });
 }

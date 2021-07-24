@@ -4,43 +4,41 @@ import { createTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 export default function TableNew() {
+  const history = useHistory();
 
-    const history = useHistory();
+  const [tableName, setTableName] = useState("");
+  const [capacity, setCapacity] = useState(1);
+  const [error, setError] = useState(null);
 
-    const [tableName, setTableName] = useState("");
-    const [capacity, setCapacity] = useState(1);
-    const [error, setError] = useState(null);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const newTable = {
+      table_name: tableName,
+      capacity: Number(capacity),
+    };
+    createTable(newTable)
+      .then((result) => {
+        console.log("submitted");
+        console.log(result);
+        history.push(`/dashboard`);
+      })
+      .catch(setError);
+  };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const newTable = {
-            "table_name": tableName,
-            "capacity": Number(capacity),
-        }
-        createTable(newTable)
-        .then((result) => {
-                console.log("submitted");
-                console.log(result);
-                history.push(`/dashboard`)
-            })
-            .catch(setError)
-    }
-
-
-
-    return(
-        <>
+  return (
+    <>
       <h2> New Table</h2>
       <ErrorAlert error={error} />
       <form onSubmit={handleSubmit}>
-
-      <div className="input-group mb-3">
+        <div className="input-group mb-3">
           <div className="input-group-prepend">
             <span className="input-group-text" id="basic-addon1">
-              <span className="oi oi-layers mr-2" ></span>
+              <span className="oi oi-layers mr-2"></span>
             </span>
           </div>
-          <label className="sr-only" htmlFor="table_name">Table Name</label>
+          <label className="sr-only" htmlFor="table_name">
+            Table Name
+          </label>
           <input
             className="form-control"
             aria-label="table_name"
@@ -48,7 +46,9 @@ export default function TableNew() {
             id="table_name"
             type="text"
             name="table_name"
-            onChange={(event) => {setTableName(event.target.value);}}
+            onChange={(event) => {
+              setTableName(event.target.value);
+            }}
             value={tableName}
             maxLength="50"
             required
@@ -58,27 +58,33 @@ export default function TableNew() {
         <div className="input-group mb-3">
           <div className="input-group-prepend">
             <span className="input-group-text" id="basic-addon1">
-              <span className="oi oi-people mr-2" ></span>
+              <span className="oi oi-people mr-2"></span>
               Capacity
             </span>
           </div>
-          <label className="sr-only" htmlFor="capacity">Capacity</label>
+          <label className="sr-only" htmlFor="capacity">
+            Capacity
+          </label>
           <input
             className="form-control"
             aria-label="table_name"
             id="capacity"
             type="number"
             name="capacity"
-            onChange={(event) => {setCapacity(event.target.value);}}
+            onChange={(event) => {
+              setCapacity(event.target.value);
+            }}
             value={capacity}
             min="1"
             required
           />
         </div>
-       
+
         {/*cancel button*/}
-        <button className="btn btn-secondary mr-1 mb-3" to="/"
-            onClick={() =>history.goBack()}
+        <button
+          className="btn btn-secondary mr-1 mb-3"
+          to="/"
+          onClick={() => history.goBack()}
         >
           <span className="oi oi-circle-x mr-2" />
           Cancel
@@ -88,8 +94,7 @@ export default function TableNew() {
           <span className="oi oi-circle-check mr-2" />
           Submit
         </button>
-
       </form>
     </>
-    )
+  );
 }

@@ -5,61 +5,70 @@ import ErrorAlert from "../layout/ErrorAlert";
 import { useParams } from "react-router-dom";
 
 export default function ReservationEdit() {
+  const history = useHistory();
+  const reservation_id = useParams().reservation_id;
 
-    const history = useHistory();
-    const reservation_id = useParams().reservation_id
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [reservationDate, setReservationDate] = useState("");
+  const [reservationTime, setReservationTime] = useState("");
+  const [people, setPeople] = useState(1);
+  const [reservationsError, setReservationsError] = useState(null);
 
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [mobileNumber, setMobileNumber] = useState("");
-    const [reservationDate, setReservationDate] = useState("");
-    const [reservationTime, setReservationTime] = useState("");
-    const [people, setPeople] = useState(1);
-    const [reservationsError, setReservationsError] = useState(null);
+  useEffect(loadReservation, [reservation_id]);
 
-    useEffect(loadReservation, [reservation_id]);
-
-    function loadReservation() {
-        const abortController = new AbortController();
-        setReservationError(null);
-        readReservation(reservation_id, abortController.signal)
-        .then(setReservation)
-        .catch(setReservationError);
-        return () => abortController.abort();
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const newReservation = {
-            "first_name": firstName,
-            "last_name": lastName,
-            "mobile_number": mobileNumber,
-            "reservation_date": reservationDate,
-            "reservation_time": reservationTime,
-            "people": Number(people),
-            "status": "booked"
-        }
-        createReservation(newReservation)
-        .then((result) => {
-                console.log("submitted");
-                console.log(result);
-                history.push(`/dashboard?date=${reservationDate}`)
-            })
-            .catch(setReservationsError)
-    }
-
-    const phoneFieldHandler = (event) => {
-      let input = event.target.value;
-      if(input.length === 10){
-          input = input[0]+input[1]+input[2]+"-"+input[3]+input[4]+input[5]+"-"+input[6]+input[7]+input[8]+input[9]
-      }
-      setMobileNumber(input)
+  function loadReservation() {
+    const abortController = new AbortController();
+    setReservationError(null);
+    readReservation(reservation_id, abortController.signal)
+      .then(setReservation)
+      .catch(setReservationError);
+    return () => abortController.abort();
   }
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const newReservation = {
+      first_name: firstName,
+      last_name: lastName,
+      mobile_number: mobileNumber,
+      reservation_date: reservationDate,
+      reservation_time: reservationTime,
+      people: Number(people),
+      status: "booked",
+    };
+    createReservation(newReservation)
+      .then((result) => {
+        console.log("submitted");
+        console.log(result);
+        history.push(`/dashboard?date=${reservationDate}`);
+      })
+      .catch(setReservationsError);
+  };
 
+  const phoneFieldHandler = (event) => {
+    let input = event.target.value;
+    if (input.length === 10) {
+      input =
+        input[0] +
+        input[1] +
+        input[2] +
+        "-" +
+        input[3] +
+        input[4] +
+        input[5] +
+        "-" +
+        input[6] +
+        input[7] +
+        input[8] +
+        input[9];
+    }
+    setMobileNumber(input);
+  };
 
-    return(
-        <>
+  return (
+    <>
       <h2> New Reservation</h2>
       <ErrorAlert error={reservationsError} />
       <form onSubmit={handleSubmit}>
@@ -71,7 +80,9 @@ export default function ReservationEdit() {
             id="firstName"
             type="text"
             name="first_name"
-            onChange={(event) => {setFirstName(event.target.value);}}
+            onChange={(event) => {
+              setFirstName(event.target.value);
+            }}
             value={firstName}
             maxLength="50"
             required
@@ -84,7 +95,9 @@ export default function ReservationEdit() {
             id="lastName"
             type="text"
             name="last_name"
-            onChange={(event) => {setLastName(event.target.value);}}
+            onChange={(event) => {
+              setLastName(event.target.value);
+            }}
             value={lastName}
             maxLength="50"
             required
@@ -110,7 +123,9 @@ export default function ReservationEdit() {
             id="reservationDate"
             type="date"
             name="reservation_date"
-            onChange={(event) => {setReservationDate(event.target.value);}}
+            onChange={(event) => {
+              setReservationDate(event.target.value);
+            }}
             value={reservationDate}
             required
           />
@@ -122,7 +137,9 @@ export default function ReservationEdit() {
             id="reservation_time"
             type="time"
             name="reservationTime"
-            onChange={(event) => {setReservationTime(event.target.value);}}
+            onChange={(event) => {
+              setReservationTime(event.target.value);
+            }}
             value={reservationTime}
             required
           />
@@ -134,16 +151,20 @@ export default function ReservationEdit() {
             id="people"
             type="number"
             name="people"
-            onChange={(event) => {setPeople(event.target.value);}}
+            onChange={(event) => {
+              setPeople(event.target.value);
+            }}
             value={people}
             min="1"
             required
           />
         </div>
-       
+
         {/*cancel button*/}
-        <button className="btn btn-secondary mx-1 mb-3" to="/"
-            onClick={() =>history.goBack()}
+        <button
+          className="btn btn-secondary mx-1 mb-3"
+          to="/"
+          onClick={() => history.goBack()}
         >
           <span className="oi oi-circle-x mr-2" />
           Cancel
@@ -153,9 +174,7 @@ export default function ReservationEdit() {
           <span className="oi oi-circle-check mr-2" />
           Submit
         </button>
-
       </form>
     </>
-    )
+  );
 }
-

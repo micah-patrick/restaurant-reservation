@@ -6,8 +6,7 @@ import ReservationCard from "../reservations/ReservationCard";
 import TableCard from "../tables/TableCard";
 import { useHistory } from "react-router-dom";
 import useQuery from "../utils/useQuery";
-import {previous, next, getDisplayDate} from "../utils/date-time";
-
+import { previous, next, getDisplayDate } from "../utils/date-time";
 
 /**
  * Defines the dashboard page.
@@ -16,7 +15,6 @@ import {previous, next, getDisplayDate} from "../utils/date-time";
  * @returns {JSX.Element}
  */
 function Dashboard({ date }) {
-
   let query = useQuery();
   date = query.get("date") || date;
   const displayDate = getDisplayDate(date);
@@ -33,68 +31,70 @@ function Dashboard({ date }) {
   useEffect(loadReservations, [date, updateCount]);
   useEffect(loadTables, [reservations, updateCount]);
 
-  function tablesUpdated(){ 
-    setUpdateCount(updateCount + 1); 
-  };
+  function tablesUpdated() {
+    setUpdateCount(updateCount + 1);
+  }
 
   useEffect(() => {
-    if(reservations.length) {
+    if (reservations.length) {
       setDisplayReservations(
         reservations.map((reservation, index) => {
           return (
             <span key={index}>
-            <ReservationCard reservation={reservation} tablesUpdated={tablesUpdated} />
-          </span>
-        );
-      })
+              <ReservationCard
+                reservation={reservation}
+                tablesUpdated={tablesUpdated}
+              />
+            </span>
+          );
+        })
       );
-    } else{
+    } else {
       setDisplayReservations(
-        <div className="alert alert-info border border-info my-2">No Reservations on {displayDate.display}</div>
-      )
+        <div className="alert alert-info border border-info my-2">
+          No Reservations on {displayDate.display}
+        </div>
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reservations]);
 
   useEffect(() => {
-    if(tables.length) {
+    if (tables.length) {
       setDisplayTables(
         tables.map((table, index) => {
           return (
             <span key={index}>
               <TableCard table={table} tablesUpdated={tablesUpdated} />
             </span>
-          )
+          );
         })
-        )
-      } else{
-        setDisplayTables(
-          <div className="alert alert-info border border-info my-2">No Tables Created</div>
-        )
-      }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tables])
+      );
+    } else {
+      setDisplayTables(
+        <div className="alert alert-info border border-info my-2">
+          No Tables Created
+        </div>
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tables]);
 
   function loadReservations() {
-    setDisplayReservations(<Loading />)
+    setDisplayReservations(<Loading />);
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
-    .then(setReservations)
-    .catch(setReservationsError)
+      .then(setReservations)
+      .catch(setReservationsError);
     return () => abortController.abort();
   }
   function loadTables() {
     const abortController = new AbortController();
     setTablesError(null);
-    listTables(abortController.signal)
-    .then(setTables)
-    .catch(setTablesError);
+    listTables(abortController.signal).then(setTables).catch(setTablesError);
     return () => abortController.abort();
   }
-
-
-
 
   return (
     <>
@@ -104,30 +104,35 @@ function Dashboard({ date }) {
       </div>
       <div className="input-group input-group-sm mb-3">
         <div className="d-flex d-md-inline mb-3 btn-group input-group-prepend">
-          <button className="btn btn-info btn-sm mb-3"
+          <button
+            className="btn btn-info btn-sm mb-3"
             onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
           >
             <span className="oi oi-chevron-left mr-2" />
             Previous
           </button>
-          <button className="btn btn-info btn-sm mb-3"
+          <button
+            className="btn btn-info btn-sm mb-3"
             onClick={() => history.push(`/dashboard`)}
           >
             <span className="oi oi-calendar mr-2" />
             Today
           </button>
-          <button className="btn btn-info btn-sm mb-3"
+          <button
+            className="btn btn-info btn-sm mb-3"
             onClick={() => history.push(`/dashboard?date=${next(date)}`)}
           >
             Next
             <span className="oi oi-chevron-right ml-2" />
           </button>
         </div>
-        <input 
+        <input
           type="date"
           className="form-control"
-          style={{maxWidth: "150px"}}
-          onChange={(event) => history.push(`/dashboard?date=${event.target.value}`)}
+          style={{ maxWidth: "150px" }}
+          onChange={(event) =>
+            history.push(`/dashboard?date=${event.target.value}`)
+          }
           value={date}
         />
       </div>
@@ -136,18 +141,13 @@ function Dashboard({ date }) {
       </div>
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={tablesError} />
-      <div>
-        {displayReservations}
-      </div>
+      <div>{displayReservations}</div>
 
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Tables</h4>
       </div>
-      <div className="">
-        {displayTables}
-      </div>
-      </>
-    
+      <div className="">{displayTables}</div>
+    </>
   );
 }
 

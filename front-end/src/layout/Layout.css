@@ -1,5 +1,5 @@
 .side-bar {
-  background-color: #F15A24;
+  background-color: #f15a24;
   min-width: 200px;
 }
 
@@ -18,16 +18,16 @@ main,
   }
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 767px) {
   .navbar,
   .navbar-brand {
     position: fixed;
     z-index: 1030;
     left: 0;
     right: 0;
-    background: #F15A24;
+    background: #f15a24;
   }
-  .navbar{
+  .navbar {
     bottom: 0;
   }
   span.navText {
@@ -42,8 +42,8 @@ main,
     width: 100%;
     justify-content: space-evenly;
   }
-  main{
-  padding-top: 20px;
-  padding-bottom: 50px;
-}
+  main {
+    padding-top: 20px;
+    padding-bottom: 50px;
+  }
 }

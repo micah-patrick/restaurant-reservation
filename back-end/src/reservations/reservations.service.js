@@ -1,15 +1,15 @@
 const knex = require("../db/connection");
 
-async function list(date){
-    return knex("reservations")
+async function list(date) {
+  return knex("reservations")
     .select("*")
-    .where({status: "booked", reservation_date: date})
-    .orWhere({status: "seated", reservation_date: date})
+    .where({ status: "booked", reservation_date: date })
+    .orWhere({ status: "seated", reservation_date: date })
     .orderBy("reservation_time");
 }
 
-async function searchList(mobile_number){
-    return knex("reservations")
+async function searchList(mobile_number) {
+  return knex("reservations")
     .whereRaw(
       "translate(mobile_number, '() -', '') like ?",
       `%${mobile_number.replace(/\D/g, "")}%`
@@ -18,38 +18,35 @@ async function searchList(mobile_number){
 }
 
 function create(reservation) {
-    return knex("reservations")
-      .insert(reservation)
-      .returning("*")
-      .then((createdRecords) => createdRecords[0]);
-  }
+  return knex("reservations")
+    .insert(reservation)
+    .returning("*")
+    .then((createdRecords) => createdRecords[0]);
+}
 
 function read(reservation_id) {
-    return knex("reservations")
-    .select("*")
-    .where({reservation_id})
-    .first();
+  return knex("reservations").select("*").where({ reservation_id }).first();
 }
 
 function updateStatus(updatedReservation) {
-    return knex("reservations")
+  return knex("reservations")
     .select("*")
-    .where({reservation_id: updatedReservation.reservation_id})
+    .where({ reservation_id: updatedReservation.reservation_id })
     .update(updatedReservation, "*");
 }
 
 function update(updatedReservation) {
-    return knex("reservations")
-        .select("*")
-        .where({reservation_id: updatedReservation.reservation_id})
-        .update(updatedReservation, "*");
+  return knex("reservations")
+    .select("*")
+    .where({ reservation_id: updatedReservation.reservation_id })
+    .update(updatedReservation, "*");
 }
 
 module.exports = {
-    list,
-    searchList,
-    create,
-    read,
-    updateStatus,
-    update,
-}
+  list,
+  searchList,
+  create,
+  read,
+  updateStatus,
+  update,
+};
