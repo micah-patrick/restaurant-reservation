@@ -8,6 +8,13 @@ import {
 import ErrorAlert from "../layout/ErrorAlert";
 import { useParams } from "react-router-dom";
 
+/**
+ * Form for creating or editing a reservation.
+ * @param {boolean} editMode
+ * If true, form is used to edit existing reservation.
+ *
+ * @returns {JSX.Element}
+ */
 export default function ReservationForm({ editMode }) {
   const history = useHistory();
 
@@ -19,8 +26,10 @@ export default function ReservationForm({ editMode }) {
     mobile_number: "",
     reservation_date: "",
     reservation_time: "",
-    people: 1,
+    people: "",
   };
+
+  const headlineText = editMode ? "Edit Reservation" : "New Reservation";
 
   const [resState, setResState] = useState(reservationInit);
 
@@ -50,7 +59,6 @@ export default function ReservationForm({ editMode }) {
         people: Number(resState.people),
         updated_at: new Date(),
       };
-
       const abortController = new AbortController();
       setReservationError(null);
       updateReservation(
@@ -80,38 +88,34 @@ export default function ReservationForm({ editMode }) {
     }
   };
 
+  //only allows digits in xxx-xxx-xxxx pattern (typed or pasted)
   const phoneFieldHandler = (event) => {
-    let input = event.target.value;
-    if (input.length === 10) {
+    const lastChar = event.target.value[event.target.value.length - 1];
+    let input = event.target.value.replace(/\D/g, "");
+    if (input.length === 3 && lastChar === "-") {
+      input += "-";
+    } else if (input.length === 6 && lastChar === "-") {
       input =
-        input[0] +
-        input[1] +
-        input[2] +
-        "-" +
-        input[3] +
-        input[4] +
-        input[5] +
-        "-" +
-        input[6] +
-        input[7] +
-        input[8] +
-        input[9];
+        input.slice(0, 3) + "-" + input.slice(3, 6) + "-" + input.slice(7, 11);
+    } else {
+      if (input.length > 3) {
+        input = input.slice(0, 3) + "-" + input.slice(3, 10);
+      }
+      if (input.length > 7) {
+        input = input.slice(0, 7) + "-" + input.slice(7, 11);
+      }
     }
     setResState((current) => ({ ...current, mobile_number: input }));
   };
 
-  //   const searchFieldHandler = (event) => {
-  //     let input = event.target.value.replace(/\D/g, "");
-  //     setSearchInput(input.slice(0,10))
-  // }
-
   return (
     <>
-      <h2> New Reservation</h2>
+      <h1> {headlineText} </h1>
       <ErrorAlert error={reservationError} />
       <form onSubmit={handleSubmit}>
         {/*name input*/}
 
+        {/* Name Fields */}
         <div className="input-group mb-3">
           <div className="input-group-prepend">
             <span className="input-group-text">
@@ -160,7 +164,7 @@ export default function ReservationForm({ editMode }) {
             required
           />
         </div>
-
+        {/* Mobile Number */}
         <div className="input-group mb-3">
           <div className="input-group-prepend">
             <span className="input-group-text" id="basic-addon1">
@@ -184,7 +188,7 @@ export default function ReservationForm({ editMode }) {
             required
           />
         </div>
-
+        {/* Date */}
         <div className="input-group mb-3">
           <div className="input-group-prepend">
             <span className="input-group-text" id="basic-addon1">
@@ -211,7 +215,7 @@ export default function ReservationForm({ editMode }) {
             required
           />
         </div>
-
+        {/* Time */}
         <div className="input-group mb-3">
           <div className="input-group-prepend">
             <span className="input-group-text" id="basic-addon1">
@@ -238,7 +242,7 @@ export default function ReservationForm({ editMode }) {
             required
           />
         </div>
-
+        {/* People */}
         <div className="input-group mb-3">
           <div className="input-group-prepend">
             <span className="input-group-text" id="basic-addon1">

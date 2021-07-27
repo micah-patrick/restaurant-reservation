@@ -17,7 +17,7 @@ import { previous, next, getDisplayDate } from "../utils/date-time";
 function Dashboard({ date }) {
   let query = useQuery();
   date = query.get("date") || date;
-  const displayDate = getDisplayDate(date);
+  const displayDate = getDisplayDate(date); //displays date in format: Friday, Jan 1 2021
 
   const history = useHistory();
   const [reservations, setReservations] = useState([]);
@@ -26,15 +26,11 @@ function Dashboard({ date }) {
   const [tablesError, setTablesError] = useState(null);
   const [displayReservations, setDisplayReservations] = useState(<Loading />);
   const [displayTables, setDisplayTables] = useState(<Loading />);
-  const [updateCount, setUpdateCount] = useState(0);
 
-  useEffect(loadReservations, [date, updateCount]);
-  useEffect(loadTables, [reservations, updateCount]);
+  useEffect(loadReservations, [date]);
+  useEffect(loadTables, [reservations]);
 
-  function tablesUpdated() {
-    setUpdateCount(updateCount + 1);
-  }
-
+  //when reservations are loaded, display either list of reservations, or alert that no reservations are on this date
   useEffect(() => {
     if (reservations.length) {
       setDisplayReservations(
@@ -43,7 +39,7 @@ function Dashboard({ date }) {
             <span key={index}>
               <ReservationCard
                 reservation={reservation}
-                tablesUpdated={tablesUpdated}
+                loadReservations={loadReservations}
               />
             </span>
           );
@@ -59,13 +55,14 @@ function Dashboard({ date }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reservations]);
 
+  //when tables are loaded, display either list of tables, or alert that no tables exist
   useEffect(() => {
     if (tables.length) {
       setDisplayTables(
         tables.map((table, index) => {
           return (
             <span key={index}>
-              <TableCard table={table} tablesUpdated={tablesUpdated} />
+              <TableCard table={table} loadReservations={loadReservations}  />
             </span>
           );
         })
@@ -89,6 +86,7 @@ function Dashboard({ date }) {
       .catch(setReservationsError);
     return () => abortController.abort();
   }
+
   function loadTables() {
     const abortController = new AbortController();
     setTablesError(null);
@@ -100,8 +98,9 @@ function Dashboard({ date }) {
     <>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">{displayDate.display}</h4>
+        <h3 className="mb-0">{displayDate.display}</h3>
       </div>
+      {/* button group (previous, Today, Next, and date picker) */}
       <div className="input-group input-group-sm mb-3">
         <div className="d-flex d-md-inline mb-3 btn-group input-group-prepend">
           <button
@@ -136,16 +135,17 @@ function Dashboard({ date }) {
           value={date}
         />
       </div>
+      {/* Reservations section */}
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      <ErrorAlert error={tablesError} />
       <div>{displayReservations}</div>
-
+      {/* Tables Section */}
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Tables</h4>
       </div>
+      <ErrorAlert error={tablesError} />
       <div className="">{displayTables}</div>
     </>
   );

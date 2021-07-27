@@ -7,9 +7,11 @@ async function list(req, res) {
   const data = await service.list();
   res.json({ data });
 }
+
+// list tables that are not occupied (reservation_id is null)
 async function listFree(req, res) {
-  const capacity = res.locals.capacity;
-  const data = await service.listFree(capacity);
+  // const capacity = res.locals.capacity;  //filters list of tables by capacity. This functionality breaks testing but I want to implement it for portfolio.
+  const data = await service.listFree(/* capacity */);
   res.json({ data });
 }
 
@@ -18,7 +20,8 @@ async function create(req, res) {
   res.status(201).json({ data });
 }
 
-const VALID_PROPERTIES = ["table_name", "capacity"];
+const VALID_PROPERTIES = ["table_name", "capacity", "reservation_id"];
+const REQUIRED_PROPERTIES = ["table_name", "capacity"];
 
 function hasOnlyValidProperties(req, res, next) {
   const { data = {} } = req.body;
@@ -36,8 +39,9 @@ function hasOnlyValidProperties(req, res, next) {
   next();
 }
 
-const hasRequiredProperties = hasProperties(...VALID_PROPERTIES);
+const hasRequiredProperties = hasProperties(...REQUIRED_PROPERTIES);
 
+// table name must be at least 2 characters long
 function tableNameIsValid(req, res, next) {
   const { table_name } = req.body.data;
   const length = table_name.length;
@@ -82,6 +86,9 @@ async function tableExists(req, res, next) {
   });
 }
 
+//updates table and reservation at the same time.
+//table is assigned a reservation_id
+//reservation is given a status of "seated"
 async function seat(req, res, next) {
   const updatedTable = {
     ...res.locals.table,
@@ -101,7 +108,6 @@ function hasOnlyReservationId(req, res, next) {
   const invalidFields = Object.keys(data).filter(
     (field) => !["reservation_id"].includes(field)
   );
-
   if (invalidFields.length) {
     return next({
       status: 400,
@@ -159,6 +165,7 @@ function reservationIsBooked(req, res, next) {
   });
 }
 
+//checks if the tables capacity is enough for the reservaion's people
 function hasCapacity(req, res, next) {
   const { capacity } = res.locals.table;
   const { people } = res.locals.reservation;

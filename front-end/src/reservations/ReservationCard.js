@@ -5,7 +5,17 @@ import { changeStatus } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import formatReservationTime from "../utils/format-reservation-time";
 
-export default function ReservationCard({ reservation, tablesUpdated }) {
+/**
+ * Defines how each reservation will be displayed on the dashboard and search pages.
+ * @param reservation
+ * the reservation to display
+ *
+ * @param loadReservations
+ * function that triggers the reservations to be updated.
+ *
+ * @returns {JSX.Element}
+ */
+export default function ReservationCard({ reservation, loadReservations }) {
   reservation = formatReservationTime(reservation);
 
   const {
@@ -18,12 +28,15 @@ export default function ReservationCard({ reservation, tablesUpdated }) {
     people,
     status,
   } = reservation;
+
+  // display date and time formatted as Friday, January 1 2021, and 3:30pm
   const displayDate = getDisplayDate(reservation_date);
   const displayTime = getDisplayTime(reservation_time);
 
   const [buttons, setButtons] = useState("");
   const [cancelError, setCancelError] = useState(null);
 
+  // defines the bootstrap class names for color based on the status of the reservation
   const statusColor = {
     booked: "success",
     seated: "primary",
@@ -31,6 +44,7 @@ export default function ReservationCard({ reservation, tablesUpdated }) {
     cancelled: "danger",
   };
 
+  // create JSX buttons for seat, edit, and cancel (only if status is "booked")
   useEffect(() => {
     if (status === "booked") {
       setButtons(
@@ -50,6 +64,7 @@ export default function ReservationCard({ reservation, tablesUpdated }) {
             Edit
           </Link>
           <button
+            data-reservation-id-cancel={reservation_id}
             to={`/reservations/${reservation_id}/edit`}
             className="btn btn-sm btn-danger"
             onClick={handleCancel}
@@ -73,7 +88,7 @@ export default function ReservationCard({ reservation, tablesUpdated }) {
       setCancelError(null);
       changeStatus(reservation_id, "cancelled", abortController.signal)
         .then(() => {
-          tablesUpdated();
+          loadReservations();
         })
         .catch(setCancelError);
       return () => abortController.abort();
@@ -86,7 +101,7 @@ export default function ReservationCard({ reservation, tablesUpdated }) {
       <div
         className={`row flex-column flex-md-row bg-light border mx-1 my-3 px-2 py-2`}
       >
-        {/* <div className={`col p-0 ml-2 bg-${statusColor[status]}`} style={{maxWidth: "10px"}}></div> */}
+        {/* status badge */}
         <div
           className={`col text-center text-md-left align-self-center mr-3`}
           style={{ maxWidth: "100px" }}
@@ -98,6 +113,7 @@ export default function ReservationCard({ reservation, tablesUpdated }) {
             {status}
           </span>
         </div>
+        {/* Party Information */}
         <div className={`col align-self-center`}>
           <h5 className="mb-1">{`${first_name} ${last_name}`}</h5>
           <p className="mb-0">
@@ -105,6 +121,7 @@ export default function ReservationCard({ reservation, tablesUpdated }) {
             <span className="ml-3">{mobile_number}</span>
           </p>
         </div>
+        {/* Date and Time */}
         <div className={`col align-self-center`}>
           <p className="mb-0">{displayDate.display}</p>
           <p className="mb-0">{displayTime}</p>

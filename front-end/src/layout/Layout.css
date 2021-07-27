@@ -1,3 +1,22 @@
+h1,
+p {
+  font-family: "Kanit", sans-serif;
+  font-weight: 200;
+}
+h2,
+h3,
+h4,
+h5,
+h6,
+.side-bar {
+  font-family: "kanit", sans-serif;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
 .side-bar {
   background-color: #f15a24;
   min-width: 200px;
@@ -12,12 +31,15 @@ main,
 .navbar {
   position: fixed;
 }
+
+/* For large screens */
 @media only screen and (min-width: 768px) {
   .side-bar {
     min-height: 100vh;
   }
 }
 
+/* For small screens */
 @media only screen and (max-width: 767px) {
   .navbar,
   .navbar-brand {

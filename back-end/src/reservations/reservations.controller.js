@@ -1,7 +1,3 @@
-/**
- * List handler for reservation resources
- */
-
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require("../errors/hasProperties");
@@ -89,18 +85,6 @@ function peopleIsPositiveInteger(req, res, next) {
 }
 
 const hasRequiredProperties = hasProperties(...REQUIRED_PROPERTIES);
-
-function mobileNumberIsValid(req, res, next) {
-  const pattern = /^[1-9]\d{2}-\d{3}-\d{4}/;
-  const { mobile_number } = req.body.data;
-  if (pattern.test(mobile_number) && mobile_number.length === 12) {
-    return next();
-  }
-  return next({
-    status: 400,
-    message: `mobile_number must be formatted as xxx-xxx-xxxx `,
-  });
-}
 
 function dateIsValid(req, res, next) {
   const { reservation_date } = req.body.data;
@@ -320,7 +304,6 @@ module.exports = {
     hasOnlyValidProperties,
     hasRequiredProperties,
     peopleIsPositiveInteger,
-    // mobileNumberIsValid,
     dateIsValid,
     timeIsValid,
     dateIsNotTuesday,
@@ -343,7 +326,6 @@ module.exports = {
     hasOnlyValidProperties,
     hasRequiredProperties,
     peopleIsPositiveInteger,
-    // mobileNumberIsValid,
     dateIsValid,
     timeIsValid,
     dateIsNotTuesday,

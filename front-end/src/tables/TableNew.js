@@ -3,11 +3,16 @@ import { useHistory } from "react-router-dom";
 import { createTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
+/**
+ * New table form.
+ *
+ * @returns {JSX.Element}
+ */
 export default function TableNew() {
   const history = useHistory();
 
   const [tableName, setTableName] = useState("");
-  const [capacity, setCapacity] = useState(1);
+  const [capacity, setCapacity] = useState("");
   const [error, setError] = useState(null);
 
   const handleSubmit = (event) => {
@@ -18,8 +23,6 @@ export default function TableNew() {
     };
     createTable(newTable)
       .then((result) => {
-        console.log("submitted");
-        console.log(result);
         history.push(`/dashboard`);
       })
       .catch(setError);
@@ -27,7 +30,7 @@ export default function TableNew() {
 
   return (
     <>
-      <h2> New Table</h2>
+      <h1> New Table</h1>
       <ErrorAlert error={error} />
       <form onSubmit={handleSubmit}>
         <div className="input-group mb-3">

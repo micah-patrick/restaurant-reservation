@@ -8,6 +8,7 @@ async function list(date) {
     .orderBy("reservation_time");
 }
 
+// list of reservations that match search criteria (phone number)
 async function searchList(mobile_number) {
   return knex("reservations")
     .whereRaw(

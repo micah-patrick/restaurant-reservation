@@ -3,18 +3,25 @@ import { useHistory } from "react-router-dom";
 import { listFreeTables, readReservation, assignTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useParams } from "react-router-dom";
+import Loading from "../layout/Loading";
 
+/**
+ * Form for seating a reservation at a table.
+ *
+ * @returns {JSX.Element}
+ */
 export default function SeatForm() {
   const history = useHistory();
   const reservation_id = useParams().reservation_id;
 
   const [table_id, setTable_id] = useState("");
-  const [reservation, setReservation] = useState("");
+  const [reservation, setReservation] = useState({});
   const [tables, setTables] = useState([]);
   const [reservationError, setReservationError] = useState(null);
   const [tablesError, setTablesError] = useState(null);
   const [seatError, setSeatError] = useState(null);
   const [tableOptions, setTableOptions] = useState(null);
+  const [displaySubHead, setDisplaySubHead] = useState(<Loading />);
 
   useEffect(loadReservation, [reservation_id]);
   useEffect(loadTables, [reservation]);
@@ -29,6 +36,13 @@ export default function SeatForm() {
       })
     );
   }, [tables]);
+  useEffect(() => {
+    if (reservation.reservation_id) {
+      setDisplaySubHead(
+        <h3>{`${reservation.first_name} ${reservation.last_name}, Party of ${reservation.people}`}</h3>
+      );
+    }
+  }, [reservation]);
 
   function loadReservation() {
     const abortController = new AbortController();
@@ -40,12 +54,14 @@ export default function SeatForm() {
   }
 
   function loadTables() {
-    const abortController = new AbortController();
-    setTablesError(null);
-    listFreeTables({ capacity: reservation.people }, abortController.signal)
-      .then(setTables)
-      .catch(setTablesError);
-    return () => abortController.abort();
+    if (reservation.reservation_id) {
+      const abortController = new AbortController();
+      setTablesError(null);
+      listFreeTables({ capacity: reservation.people }, abortController.signal)
+        .then(setTables)
+        .catch(setTablesError);
+      return () => abortController.abort();
+    }
   }
 
   const handleSubmit = (event) => {
@@ -62,8 +78,8 @@ export default function SeatForm() {
 
   return (
     <>
-      <h2> Seat Reservation {reservation_id}</h2>
-      <h3>{`${reservation.first_name} ${reservation.last_name}, Party of ${reservation.people}`}</h3>
+      <h1> {`Seat Reservation`}</h1>
+      {displaySubHead}
       <ErrorAlert error={reservationError} />
       <ErrorAlert error={tablesError} />
       <ErrorAlert error={seatError} />

@@ -5,6 +5,11 @@ import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import Loading from "../layout/Loading";
 
+/**
+ * search by mobile number page.
+ *
+ * @returns {JSX.Element}
+ */
 export default function Search() {
   const [searchInput, setSearchInput] = useState("");
   const [searchError, setSearchError] = useState(null);
@@ -37,6 +42,7 @@ export default function Search() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reservations]);
 
+  // only allow numeric digits in search input
   const searchFieldHandler = (event) => {
     let input = event.target.value.replace(/\D/g, "");
     setSearchInput(input.slice(0, 10));
@@ -54,7 +60,7 @@ export default function Search() {
 
   return (
     <>
-      <h2>Search</h2>
+      <h1>Search</h1>
       <form onSubmit={handleSubmit}>
         <div className="input-group mb-3">
           <label className="sr-only" htmlFor="searchInput">

@@ -2,13 +2,24 @@ import React, { useEffect, useState } from "react";
 import { unassignTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
-export default function TableCard({ table, tablesUpdated }) {
+/**
+ * Defines how each table will be displayed on the dashboard page.
+ * @param table
+ * the table to display
+ *
+ * @param loadReservations
+ * function that triggers the reservations and tables to be updated.
+ *
+ * @returns {JSX.Element}
+ */
+export default function TableCard({ table, loadReservations }) {
   const { table_id, table_name, capacity, reservation_id } = table;
 
   const [tableStatus, setTableStatus] = useState("Loading...");
   const [finishButtonDisplay, setFinishButtonDisplay] = useState("");
   const [seatError, setSeatError] = useState(null);
 
+  // defines the bootstrap class names for color based on the status of the table
   const statusColor = {
     Occupied: "primary",
     Free: "success",
@@ -43,7 +54,7 @@ export default function TableCard({ table, tablesUpdated }) {
       setSeatError(null);
       unassignTable(table_id, abortController.signal)
         .then(() => {
-          tablesUpdated();
+          loadReservations();
         })
         .catch(setSeatError);
       return () => abortController.abort();
@@ -54,7 +65,7 @@ export default function TableCard({ table, tablesUpdated }) {
     <>
       <ErrorAlert error={seatError} />
       <div className="row flex-column flex-md-row bg-light border mx-1 my-3 px-2 py-2">
-        {/* <div className={`col p-0 ml-2 bg-${statusColor[tableStatus]}`} style={{maxWidth: "10px"}}></div> */}
+        {/* status badge */}
         <div
           className={`col text-center text-md-left align-self-center`}
           style={{ maxWidth: "100px" }}
@@ -66,12 +77,15 @@ export default function TableCard({ table, tablesUpdated }) {
             {tableStatus}
           </span>
         </div>
+        {/* Table Name */}
         <div className="col align-self-center text-center text-md-left">
           <h5 className="mb-1">{table_name}</h5>
         </div>
+        {/* Table Capacity */}
         <div className="col align-self-center text-center text-md-left">
           <p className="mb-0">{`${capacity} Top`}</p>
         </div>
+        {/* Finish button*/}
         <div className="col align-self-center text-center text-md-right my-2">
           {finishButtonDisplay}
         </div>
