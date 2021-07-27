@@ -62,7 +62,7 @@ function Dashboard({ date }) {
         tables.map((table, index) => {
           return (
             <span key={index}>
-              <TableCard table={table} loadReservations={loadReservations}  />
+              <TableCard table={table} loadReservations={loadReservations} />
             </span>
           );
         })
