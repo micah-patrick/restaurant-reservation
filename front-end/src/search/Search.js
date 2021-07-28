@@ -27,7 +27,7 @@ export default function Search() {
         reservations.map((reservation, index) => {
           return (
             <span key={index}>
-              <ReservationCard reservation={reservation} />
+              <ReservationCard reservation={reservation} loadReservations={loadReservations} />
             </span>
           );
         })
