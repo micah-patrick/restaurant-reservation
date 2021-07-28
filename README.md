@@ -33,17 +33,17 @@ Periodic Tables is a restaurant reservation system for fine dining restaurants. 
 #
 ## DESCRIPTION
 
-A restaurant manager wants to create a new reservation when a customer calls so that she knows how many customers will show up on a given day. _Periodic Tables_ allows her to create a new reservation with the guest's name, number, party size, date and time. 
+A restaurant manager wants to create a new reservation when a customer calls so that she knows how many customers will show up on a given day. _Periodic Tables_ allows her to create a new reservation with the guest's name, number, party size, date, and time. 
 
-The restaurant manager only wants reservations to be made during business hours so that her or one of her employees don't accidentally make a reservation for a date or time that they cannot accommodate their guests. _Periodic Tables_ limits the creation of new reservations to future dates and during business hours (currently every day except tuesdays between 10:30am and 9:30pm).
+The restaurant manager only wants reservations to be made during business hours so that she or one of her employees doesn't accidentally make a reservation for a date or time that they cannot accommodate their guests. _Periodic Tables_ limits the creation of new reservations to future dates and during business hours (currently, between 10:30 am and 9:30 pm every day except Tuesdays).
 
-The restaurant manager wants to be able to assign guests with a reservation to a table when they arrive. This way she can keep track of who is seated and which tables are occupied. _Periodic Tables_ allows her to create tables with a name and capacity. She can then use the app to assign a reservation to an available table (one with a capacity that will accomodate the reservation's guests). She can then free up the table when the guests are done.
+The restaurant manager wants to be able to assign guests with a reservation to a table when they arrive. This way she can keep track of who is seated and which tables are occupied. _Periodic Tables_ allows her to create tables with a name and capacity. She can then use the app to assign a reservation to an available table (one with a capacity that will accommodate the reservation's guests). She can then free up the table when the guests are done.
 
-The restaurant manager wants to be able to easily see the status of the reservations so she can keep track of which guests have been served. _Periodic Tables_ assigns a status of _booked, seated, finished,_ or _cancelled_. _finished_ and _cancelled_ reservations are hidden from the dashboard.
+The restaurant manager wants to be able to easily see the status of the reservations so she can keep track of which guests have been served. _Periodic Tables_ assigns a status of _booked, seated, finished,_ or _canceled_. _finished_ and _canceled_ reservations are hidden from the dashboard.
 
-The restaurant manager wants to be able to search for a reservation by phone number so that if they call with a question, she can quickly find their reservation. _Periodic Tables_ allows her to search a partial of complete phone number and get back a list of all matching reservations.
+The restaurant manager wants to be able to search for a reservation by phone number so that if they call with a question, she can quickly find their reservation. _Periodic Tables_ allows her to search a partial or complete phone number and get back a list of all matching reservations.
 
-The restaurant manager wants to be able to modify or cancel a reservation in order to keep the reservations up to date. _Periodic Tables_ allows reservations that have not yet been seated to be edited or cancelled.
+The restaurant manager wants to be able to modify or cancel a reservation to keep the reservations up to date. _Periodic Tables_ allows reservations that have not yet been seated to be edited or canceled.
 
 
 
@@ -146,7 +146,7 @@ Method | Route | Description
 
 1. Fork and clone this repository.
 1. Run `cp ./back-end/.env.sample ./back-end/.env`.
-1. Update the `./back-end/.env` file with the connection URL's to your ElephantSQL database instance.
+1. Update the `./back-end/.env` file with the connection URL's to your PostgreSQL database instance.
 1. Run `cp ./front-end/.env.sample ./front-end/.env`.
 1. You should not need to make changes to the `./front-end/.env` file unless you want to connect to a backend at a location other than `http://localhost:5000`.
 1. Run `npm install` to install project dependencies.
