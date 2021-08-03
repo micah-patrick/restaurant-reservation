@@ -1,4 +1,4 @@
-![Periodic Tables](./front-end/src/readme/readme-header.png "Periodic Tables")
+![Periodic Tables](https://raw.githubusercontent.com/micah-patrick/restaurant-reservation/main/front-end/src/readme/readme-header.png "Periodic Tables")
 
 #
 # Periodic Tables | Restaurant Reservation System
@@ -55,28 +55,28 @@ The restaurant manager wants to be able to modify or cancel a reservation to kee
 The Dashboard displays a date, buttons and a date picker to change date, and lists of reservations (for the given date) and all tables.
 
 `path = '/dashboard'
-![dashboard](./front-end/src/readme/screenshot-dash.png)
+![dashboard](https://raw.githubusercontent.com/micah-patrick/restaurant-reservation/main/front-end/src/readme/screenshot-dash.png)
 
 ### Search:
 
 The Search page displays reservations with phone numbers matching the search input. The search works with full or partial phone numbers.
 
 `path = '/search'
-![search](./front-end/src/readme/screenshot-search.png)
+![search](https://raw.githubusercontent.com/micah-patrick/restaurant-reservation/main/front-end/src/readme/screenshot-search.png)
 
 ### Status:
 
 Reservations can have a `status` of _booked, seated, finished,_ or _cancelled_.
 
-![search](./front-end/src/readme/screenshot-status.png)
+![search](https://raw.githubusercontent.com/micah-patrick/restaurant-reservation/main/front-end/src/readme/screenshot-status.png)
 Tables can be _occupied_ or _free_
-![search](./front-end/src/readme/screenshot-tables.png)
+![search](https://raw.githubusercontent.com/micah-patrick/restaurant-reservation/main/front-end/src/readme/screenshot-tables.png)
 
 #
 ## API
 
 ### ERD:
-![erd](./front-end/src/readme/erd.png "erd")
+![erd](https://raw.githubusercontent.com/micah-patrick/restaurant-reservation/main/front-end/src/readme/erd.png "erd")
 
 ### Reservations
 
